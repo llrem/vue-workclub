@@ -13,6 +13,12 @@ export default new Router({
     },
 
     {
+      path: '/404',
+      component: () => import('@/views/404'),
+      hidden: true
+    },
+
+    {
       path: '/',
       redirect: '/dashboard',
       hidden: true
@@ -22,7 +28,7 @@ export default new Router({
       path: '/dashboard',
       component: layout,
       name: 'dashboard',
-      meta: { title: 'Dashboard', icon: 'el-icon-menu' },
+      meta: { title: '工作台', icon: 'el-icon-menu' },
       children: [{
         path: '/dashboard',
         name: 'Dashboard',
@@ -31,38 +37,83 @@ export default new Router({
     },
 
     {
+      path: '/project',
+      component: layout,
+      name: 'project',
+      meta: { title: '项目', icon: 'el-icon-s-help' },
+      children: [
+        {
+          path: '/my-project',
+          name: 'my-project',
+          component: () => import('@/views/project/myProject/index'),
+          meta: { title: '我的项目', icon: 'el-icon-s-help' },
+        },
+        {
+          path: '/archived-project',
+          name: 'archived-project',
+          component: () => import('@/views/project/archivedProject/index'),
+          meta: { title: '已归档项目', icon: 'el-icon-s-help' }
+        }
+      ]
+    },
+
+    {
+      path: '/notice',
+      component: layout,
+      name: 'notice',
+      meta: { title: '消息', icon: 'el-icon-s-comment' },
+      children: [
+        {
+          path: '/notice',
+          name: 'notice',
+          component: () => import('@/views/notice/index'),
+        }
+      ]
+    },
+
+    {
+      path: '/document',
+      component: layout,
+      name: 'document',
+      meta: { title: '文件', icon: 'el-icon-s-order' },
+      children: [
+        {
+          path: '/document',
+          name: 'document',
+          component: () => import('@/views/document/index'),
+        }
+      ]
+    },
+
+    {
       path: '/chart',
       component: layout,
       name: 'chart',
-      meta: { title: 'Chart', icon: 'el-icon-s-data' },
+      meta: { title: '数据图表', icon: 'el-icon-s-data' },
       children: [
         {
           path: '/chart',
-          name: 'Form',
+          name: 'chart',
           component: () => import('@/views/chart/index'),
         }
       ]
     },
 
     {
-      path: '/project',
+      path: '/setting',
       component: layout,
-      name: 'project',
-      meta: { title: 'project', icon: 'el-icon-s-help' },
+      name: 'setting',
+      meta: { title: '设置', icon: 'el-icon-s-tools' },
       children: [
         {
-          path: 'menu1',
-          name: 'menu1',
-          component: () => import('@/views/project/menu1/index'),
-          meta: { title: 'menu1', icon: 'el-icon-s-help' },
-        },
-        {
-          path: 'menu2',
-          name: 'menu2',
-          component: () => import('@/views/project/menu2/index'),
-          meta: { title: 'menu2', icon: 'el-icon-s-help' },
+          path: '/setting',
+          name: 'setting',
+          component: () => import('@/views/setting/index'),
         }
       ]
-    }
+    },
+
+    // 404 page must be placed at the end !!!
+    { path: '*', redirect: '/404', hidden: true }
   ]
 })

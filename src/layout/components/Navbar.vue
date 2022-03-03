@@ -6,7 +6,10 @@
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
-
+        <div class="avatar-wrapper">
+          <img src="static/images/user.jpg" class="user-avatar" alt=""/>
+        </div>
+        <el-dropdown-menu></el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
@@ -14,8 +17,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import Breadcrumb from '@/components/Breadcrumb'
-  import Hamburger from '@/components/Hamburger'
+  import breadcrumb from '@/components/breadcrumb'
+  import hamburger from '@/components/hamburger'
 
   export default {
     data() {
@@ -24,8 +27,8 @@
       }
     },
     components: {
-      Breadcrumb,
-      Hamburger
+      breadcrumb,
+      hamburger
     },
     computed: {
       ...mapGetters([
@@ -78,44 +81,19 @@
         outline: none;
       }
 
-      .right-menu-item {
-        display: inline-block;
-        padding: 0 8px;
-        height: 100%;
-        font-size: 18px;
-        color: #5a5e66;
-        vertical-align: text-bottom;
-
-        &.hover-effect {
-          cursor: pointer;
-          transition: background .3s;
-
-          &:hover {
-            background: rgba(0, 0, 0, .025)
-          }
-        }
-      }
-
       .avatar-container {
-        margin-right: 30px;
+        margin-right: 20px;
 
         .avatar-wrapper {
-          margin-top: 5px;
+          margin-top: 6px;
           position: relative;
 
           .user-avatar {
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-          }
-
-          .el-icon-caret-bottom {
-            cursor: pointer;
-            position: absolute;
-            right: -20px;
-            top: 25px;
-            font-size: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 19px;
+            object-fit:cover;
           }
         }
       }
