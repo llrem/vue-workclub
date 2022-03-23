@@ -9,7 +9,9 @@
 </template>
 
 <script>
-  import { Navbar, Sidebar, AppMain } from './components'
+  import Sidebar from '@/components/layout/Sidebar'
+  import Navbar from '@/components/layout/Navbar'
+  import AppMain from '@/components/layout/AppMain'
 
   export default {
     name: 'Layout',

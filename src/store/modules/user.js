@@ -1,12 +1,10 @@
 import {login, logout, getInfo, register} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import Cookies from "js-cookie";
 
 const getDefaultState = () => {
   return {
     token: getToken(),
     userInfo: '',
-    avatar: ''
   }
 }
 
@@ -21,7 +19,8 @@ const mutations = {
   },
   SET_USERINFO: (state, userInfo) => {
     state.userInfo = userInfo
-  }
+  },
+
 }
 
 const actions = {
@@ -52,17 +51,14 @@ const actions = {
     })
   },
 
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { data } = response
-        console.log(response)
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
         commit('SET_USERINFO', data)
-
-        Cookies.set("userInfo", data)
         resolve(data)
       }).catch(error => {
         reject(error)

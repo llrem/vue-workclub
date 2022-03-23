@@ -40,19 +40,56 @@ export default new Router({
       path: '/project',
       component: layout,
       name: 'project',
+      redirect: '/project/my-project',
       meta: { title: '项目', icon: 'el-icon-s-help' },
       children: [
         {
-          path: '/my-project',
+          path: 'my-project',
           name: 'my-project',
           component: () => import('@/views/project/myProject/index'),
           meta: { title: '我的项目', icon: 'el-icon-s-help' },
         },
         {
-          path: '/archived-project',
+          path: 'archived-project',
           name: 'archived-project',
           component: () => import('@/views/project/archivedProject/index'),
           meta: { title: '已归档项目', icon: 'el-icon-s-help' }
+        },
+      ]
+    },
+
+    {
+      path:'/task',
+      name:'task',
+      redirect:'task/board',
+      component: ()=>import('@/views/project/task/index'),
+      hidden: true,
+      meta: { title: '任务'},
+      children: [
+        {
+          path:'board',
+          name:'board',
+          component: ()=>import('@/views/project/task/board/index'),
+        },
+        {
+          path:'log',
+          name:'log',
+          component: ()=>import('@/views/project/task/log/index'),
+        },
+        {
+          path:'member',
+          name:'member',
+          component: ()=>import('@/views/project/task/member/index'),
+        },
+        {
+          path:'setting',
+          name:'setting',
+          component: ()=>import('@/views/project/task/setting/index'),
+        },
+        {
+          path:'statistic',
+          name:'statistic',
+          component: ()=>import('@/views/project/task/statistic/index'),
         }
       ]
     },
@@ -72,20 +109,6 @@ export default new Router({
     },
 
     {
-      path: '/document',
-      component: layout,
-      name: 'document',
-      meta: { title: '文件', icon: 'el-icon-s-order' },
-      children: [
-        {
-          path: '/document',
-          name: 'document',
-          component: () => import('@/views/document/index'),
-        }
-      ]
-    },
-
-    {
       path: '/chart',
       component: layout,
       name: 'chart',
@@ -100,6 +123,20 @@ export default new Router({
     },
 
     {
+      path: '/mine',
+      component: layout,
+      name: 'mine',
+      meta: { title: '我的', icon: 'el-icon-user-solid' },
+      children: [
+        {
+          path: '/mine',
+          name: 'mine',
+          component: () => import('@/views/mine/index'),
+        }
+      ]
+    },
+
+    {
       path: '/setting',
       component: layout,
       name: 'setting',
@@ -108,7 +145,7 @@ export default new Router({
         {
           path: '/setting',
           name: 'setting',
-          component: () => import('@/views/setting/index'),
+          component: () => import('@/views/setting/test3'),
         }
       ]
     },

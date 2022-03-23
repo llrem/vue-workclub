@@ -85,7 +85,7 @@
           if(valid){
             this.loading = true
             this.$store.dispatch('user/login', this.loginForm).then(() => {
-              console.log("登录")
+              this.$store.dispatch('user/getInfo')
               this.$router.push({path:'/'})
               this.loading = false
             }).catch(() => {

@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie'
 
 const state = {
-  sidebar: Cookies.get('sidebarStatus')
+  //sidebar: Cookies.get('sidebarStatus')失效，为什么？
+  sidebar: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true
 }
 
 const mutations = {

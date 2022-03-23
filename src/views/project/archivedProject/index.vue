@@ -11,7 +11,7 @@
       <el-button size="medium" type="primary" icon="el-icon-document-copy" @click="">批量操作</el-button>
     </div>
     <div class="content">
-      <card v-for="project in projects" v-if="project.status===0" :img-src="project.picture" :title="project.name" :key="project.id"></card>
+      <card v-for="project in projects" v-if="project.status===0" :img-src="project.picture" :title="project.name" :project="project" :key="project.id"></card>
     </div>
   </div>
 </template>
@@ -33,7 +33,6 @@
     created() {
       getProjects({id:this.$store.getters.userInfo.id}).then(res => {
         this.projects = res.data;
-        console.log(res.data);
       }).catch(err => {
         this.$message.error(err)
       })
@@ -60,7 +59,7 @@
 
   .search{
     color: #333333;
-    border: 1px solid #C7B198;
+    border: 1px solid #409EFF;
     border-radius: 5px;
     width: 300px;
     height: 37px;

@@ -1,6 +1,5 @@
 <template>
   <div class="project-wrapper">
-
     <div class="navbar">
       <div class="search">
         <i class="el-icon-search"></i>
@@ -16,7 +15,7 @@
     </div>
 
     <div class="content">
-      <card v-for="project in projects" v-if="project.status===1" :img-src="project.picture" :title="project.name" :key="project.id"></card>
+      <card v-for="project in projects" v-if="project.status===1" :img-src="project.picture" :title="project.name" :project="project" :key="project.id"></card>
 
       <div @click="createProject" class="add-project">
         <i class="el-icon-circle-plus-outline"></i>
@@ -71,7 +70,7 @@
 
 <script>
   import card from "@/components/card"
-  import {create_project, getProjects, search} from "@/api/project"
+  import {createProject, getProjects, search} from "@/api/project"
   import {policy} from "@/api/oss";
 
   export default {
@@ -107,7 +106,6 @@
     created() {
       getProjects({id:this.$store.getters.userInfo.id}).then(res => {
         this.projects = res.data;
-        console.log(res.data);
       }).catch(err => {
         console.log(err)
       })
@@ -122,7 +120,7 @@
         this.dialogVisible=false
       },
       onSubmit() {
-        create_project(this.form).then(res => {
+        createProject(this.form).then(res => {
           console.log(res)
           this.$message({
             message: '创建成功',
@@ -228,7 +226,7 @@
 
   .search{
     color: #333333;
-    border: 1px solid #C7B198;
+    border: 1px solid #409EFF;
     border-radius: 5px;
     width: 300px;
     height: 37px;
@@ -262,8 +260,8 @@
   .add-project{
     width: 220px;
     height: 146px;
-    background-color: #F0ECE3;
-    border-radius: 10px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
     margin: 0 10px 10px 0;
     float: left;
     transition:All 0.2s ease-in-out;
@@ -272,13 +270,13 @@
       i,label{
         color: #409EFF;
       }
-      box-shadow: 3px 7px 5px rgba(0,21,41,.20);
+      box-shadow: 2px 5px 5px rgba(0,21,41,.20);
       transform:translate(0,-5px);
     }
     i{
       font-size: 50px;
       margin: 37px 40px 0 85px;
-      color: darkgrey;
+      color: grey;
       float: none;
     }
     label{
@@ -286,7 +284,7 @@
       height: 18px;
       font-weight: normal;
       margin:5px 0 0 80px;
-      color: darkgrey;
+      color: grey;
     }
   }
   .hide {

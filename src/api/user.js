@@ -30,3 +30,19 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function saveInfo(data) {
+  return request({
+    url: '/user/saveInfo',
+    method: 'post',
+    data
+  })
+}
+
+export function saveAvatar(data) {
+  return request({
+    url: '/user/saveAvatar',
+    method: 'post',
+    data
+  })
+}

@@ -16,13 +16,22 @@ export function search(params){
   })
 }
 
-export function create_project(data) {
+export function createProject(data) {
   return request({
     url: '/project/create_project',
     method: 'post',
     data:data
   })
 }
+
+export function getProjectMembers(params) {
+  return request({
+    url: '/project/get_project_members',
+    method: 'get',
+    params:params
+  })
+}
+
 // 上传图片至本地
 // export function uploadImg(data,username) {
 //   const formData = new FormData()

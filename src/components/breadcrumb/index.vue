@@ -2,8 +2,7 @@
   <el-breadcrumb class="app-breadcrumb" separator="/">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <!--index===levelList.length-1 表示最后一个路径-->
-        <span v-if="index!==0||levelList.length===1" class="last-path">{{ item.meta.title }}</span>
+        <span v-if="index===levelList.length-1" class="last-path">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>

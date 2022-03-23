@@ -1,10 +1,12 @@
 <template>
-  <p>document</p>
+  <div class="wrapper">
+    <p>log</p>
+  </div>
 </template>
 
 <script>
     export default {
-        name: "index.vue"
+        name: "index"
     }
 </script>
 
