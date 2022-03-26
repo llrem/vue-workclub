@@ -50,14 +50,14 @@
                     <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
                   </el-form>
                   <div class="user-list">
-                    <div class="user-item" v-for="member in members" :key="member.id" @click="()=>selectMember(member.id)">
+                    <div class="user-item" v-for="member in members" :tabIndex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
                       <img :src="member.icon" alt="">
                       <label>{{member.nickName}}</label>
                     </div>
                   </div>
                   <div style="text-align: right; margin: 0">
                     <el-button size="mini" type="text" @click="userSelectVisible = false">取消</el-button>
-                    <el-button type="primary" size="mini" @click="submit">确定</el-button>
+                    <el-button type="primary" size="mini" @click="submitExecutorSelection">确定</el-button>
                   </div>
                   <el-button class="executorBtn" slot="reference" @click="getMembers">
                     <div class="executorImg" v-if="hideExecutorIcon">
@@ -96,7 +96,7 @@
               <div class="form-label">
               <label><i class="el-icon-medal"></i>优先级</label>
               </div>
-              <el-dropdown class="priority" trigger="click">
+              <el-dropdown class="priority" placement="bottom-start" trigger="click">
                 <label :class="priorityBColor">{{priority}}</label>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="priorityChange(1)">普通</el-dropdown-item>
@@ -134,12 +134,53 @@
           <div class="line"></div>
           <div class="task-info-right">
             <div class="followers">
+              <label>参与者</label>
+              <div class="follower">
+                <el-tooltip v-for="follower in followers" :open-delay=500 effect="dark" :key="follower.id" :content="follower.nickName" placement="top">
+                  <img :src="follower.icon" alt="">
+                </el-tooltip>
+                <el-popover
+                  placement="bottom"
+                  width="260"
+                  trigger="click"
+                  v-model="followerSelectVisible">
+                  <label>选择成员</label>
+                  <el-form ref="form" :model="form" style="margin: 10px 0">
+                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
+                  </el-form>
+                  <div class="user-list">
+                    <div class="user-item" v-for="member in members" :tabindex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
+                      <img :src="member.icon" alt="">
+                      <label>{{member.nickName}}</label>
+                    </div>
+                  </div>
+                  <div style="text-align: right; margin: 0">
+                    <el-button size="mini" type="text" @click="followerSelectVisible = false">取消</el-button>
+                    <el-button type="primary" size="mini" @click="submitFollowerSelection">确定</el-button>
+                  </div>
+                  <el-button class="executorBtn" slot="reference" @click="getMembers">
+                    <div class="add-follower">
+                      <i class="el-icon-plus"></i>
+                    </div>
+                  </el-button>
+                </el-popover>
+              </div>
             </div>
             <div class="dependence">
             </div>
           </div>
         </div>
-        <div class="task-comment">
+        <div class="task-menu">
+          <el-menu default-active="1" class="el-menu-demo" mode="horizontal">
+            <el-menu-item index="1" @click="to(1)"><i class="el-icon-chat-dot-round"></i>讨论</el-menu-item>
+            <el-menu-item index="2" @click="to(2)"><i class="el-icon-folder"></i>附件</el-menu-item>
+            <el-menu-item index="3" @click="to(3)"><i class="el-icon-finished"></i>活动记录</el-menu-item>
+          </el-menu>
+
+          <comment v-if="content === 1" :task-id="this.task.id"/>
+          <document v-if="content === 2"/>
+          <log v-if="content === 3"/>
+
         </div>
       </div>
     </el-dialog>
@@ -154,10 +195,12 @@
     changeTaskPriority,
     changeTaskStatus,
     deleteTag,
-    getTaskInfo, removeExecutor, selectMember
+    getTaskInfo, removeExecutor, selectExecutor, selectFollower
   } from "@/api/task";
   import {getProjectMembers} from "@/api/project";
-  import avatar from "@/components/avatar"
+  import comment from "@/views/project/task/board/comment"
+  import document from "@/views/project/task/board/document"
+  import log from "@/views/project/task/board/log"
 
     export default {
       name: "task",
@@ -166,6 +209,7 @@
         return{
           dialogVisible:false,
           userSelectVisible:false,
+          followerSelectVisible:false,
           description:'',
           status:'未完成',
           statusBColor:'status-color1',
@@ -183,16 +227,26 @@
             user:''
           },
           members:[],
+          followers:[],
           executor:'Not Assigned',
           executorImg:'',
-          hideExecutorIcon: false
+          hideExecutorIcon: false,
+          follower:'',
+          followerImg:'',
+          activeIndex:'',
+          content: 1,
         }
-      },
-      components:{
-        avatar
       },
       props:{
         task:''
+      },
+      components:{
+        comment,document,log
+      },
+      computed: {
+        key() {
+          return this.$route.path
+        },
       },
       created(){
         getTaskInfo({taskId:this.task.id}).then(res=>{
@@ -200,12 +254,12 @@
           this.description = taskInfo.description;
           this.startDate = taskInfo.startDate;
           this.dueDate = taskInfo.dueDate
+          this.followers = taskInfo.followers;
           if(taskInfo.executor){
             this.hideExecutorIcon = true
             this.executor = taskInfo.executor.nickName
             this.executorImg = taskInfo.executor.icon
           }
-
           switch (taskInfo.priority) {
             case 1:{
               this.priority = '普通'
@@ -266,7 +320,7 @@
       methods:{
         close(){
           this.dialogVisible = false
-          this.reload();
+          //this.reload();
         },
         statusChange(status){
           changeTaskStatus({taskId:this.task.id, status:status}).then(res=>{
@@ -341,8 +395,26 @@
             this.description = res.data
           })
         },
-        submit(){
-          this.userSelectVisible = false
+        selectMember(memberId){
+          this.memberId = memberId;
+        },
+        submitExecutorSelection(){
+          selectExecutor({taskId:this.task.id,memberId:this.memberId}).then(res=>{
+            this.executor = res.data.nickName
+            this.executorImg = res.data.icon
+            this.hideExecutorIcon = true
+            this.memberId=''
+            this.userSelectVisible = false
+          })
+        },
+        submitFollowerSelection(){
+          selectFollower({taskId:this.task.id,memberId:this.memberId}).then(res=>{
+            this.followers.push(res.data)
+            this.$message({
+              message: '添加成功',
+              type: 'success'
+            });
+          })
         },
         getMembers(){
           this.$store.dispatch("app/getProject").then(project=>{
@@ -352,19 +424,27 @@
             })
           })
         },
-        selectMember(memberId){
-          console.log(memberId)
-          selectMember({taskId:this.task.id,memberId:memberId}).then(res=>{
-            this.executor = res.data.nickName
-            this.executorImg = res.data.icon
-            this.hideExecutorIcon = true
-          })
-        },
         removeExecutor(){
           removeExecutor({taskId:this.task.id}).then(res=>{
             this.executor = 'Not Assigned'
             this.hideExecutorIcon = false
           })
+        },
+        to(path){
+          switch (path) {
+            case 1:{
+              this.content = 1;
+              break;
+            }
+            case 2:{
+              this.content = 2;
+              break;
+            }
+            case 3:{
+              this.content = 3;
+              break;
+            }
+          }
         }
       }
     }
@@ -487,6 +567,10 @@
         background-color: #f0f0f0;
         border-radius: 3px;
       }
+      &:focus{
+        background-color: #dedede;
+        border-radius: 3px;
+      }
       img{
         width: 26px;
         height: 26px;
@@ -519,21 +603,22 @@
     height: calc(100% - 51px);
     overflow-x: hidden;
     overflow-y: auto;
+    margin-bottom: 50px;
     .task-info{
       display: flex;
+      //border-bottom: solid 1px lightgrey;
       .task-info-left{
         width: 65%;
-        padding: 10px 30px;
+        padding: 10px 25px;
       }
       .line{
-        width: 1.3px;
-        margin: 20px 0;
-        background-color: lightgrey;
+        width: 1px;
+        margin-top: 15px;
+        background-color: #dedede;
       }
       .task-info-right{
         width: 35%;
-        height:100px;
-        display: flex;
+        height:auto;
       }
     }
     .description{
@@ -592,8 +677,38 @@
         vertical-align: bottom;
       }
     }
-    .task-comment{
-      height: 500px;
+    .task-menu{
+      .el-menu{
+        position: sticky;
+        top: -1px;
+        margin: 0 25px;
+      }
+      .el-menu-item{
+        padding:0 5px;
+        margin-right: 15px;
+        line-height:45px;
+        height: 44px;
+        transition: none;
+        &:hover{
+          color: #333333;
+          i{
+            color: #333333;
+          }
+        }
+        i{
+          margin-right: 2px;
+          margin-top: -3px;
+        }
+        a{
+          padding: 12px 0;
+        }
+      }
+      .is-active{
+        color: #333333;
+        i{
+          color: #333333;
+        }
+      }
     }
   }
   .status2{
@@ -637,13 +752,53 @@
     color: white;
     background-color: #ff4500;
   }
+  .followers{
+    width: 100%;
+    padding: 15px 12px 0 12px;
+    border-bottom: solid 1px lightgrey;
+    label{
+      width: 100%;
+      font-size: 14px;
+      font-weight: bolder;
+    }
+    .follower{
+      display: flex;
+      align-items: center;
+      height: auto;
+      padding: 10px 0;
+      flex-wrap: wrap;
+      img{
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        margin-right: -4px;
+        margin-bottom: 3px;
+        object-fit:cover;
+      }
+      .add-follower{
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        background-color: lightgrey;
+        &:hover{
+          background-color: #c8c8c8;
+        }
+        i{
+          color: white;
+          font-size: 15px;
+          font-weight: bold;
+        }
+        padding: 7.7px 7.2px;
+      }
+    }
+  }
   ::-webkit-scrollbar{
     width: 7px;
     height: 7px;
   }
   ::-webkit-scrollbar-track{
     background-color: #f4f4f4;
-
+    border-radius: 5px;
   }
   ::-webkit-scrollbar-thumb{
     border-radius: 5px;
@@ -658,7 +813,8 @@
       margin-top: 30px !important;
       margin-bottom: 0 !important;
       .el-dialog__header{
-        padding:0
+        padding:0;
+        border: none;
       }
       .el-dialog__body{
         padding:0;
@@ -687,6 +843,14 @@
   .el-popover{
     .el-input__inner{
       height: 35px;
+    }
+  }
+  .follower{
+    .el-button{
+      margin-left: 7px;
+      padding: 0;
+      border-radius: 15px;
+      border: none;
     }
   }
 </style>

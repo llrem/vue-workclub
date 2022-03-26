@@ -106,6 +106,7 @@
     created() {
       getProjects({id:this.$store.getters.userInfo.id}).then(res => {
         this.projects = res.data;
+        console.log(this.projects)
       }).catch(err => {
         console.log(err)
       })

@@ -98,7 +98,10 @@
     methods:{
       onSubmit(){
         saveInfo(this.form).then(res=>{
-          console.log(res)
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          });
         }).catch(err=>{
           console.log(err)
         })
@@ -129,7 +132,10 @@
         saveAvatar(this.form).then(res=>{
           //为什么上传图片后，没有调用set_userInfo,但这里打印出来的userInfo是已经更新了的userInfo
           //console.log(this.$store.getters.userInfo)
-
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          });
           this.reload();
         }).catch(err=>{
           console.log(err)

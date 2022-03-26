@@ -70,6 +70,23 @@ export default new Router({
           path:'board',
           name:'board',
           component: ()=>import('@/views/project/task/board/index'),
+          children: [
+            {
+              path:'comment',
+              name:'comment',
+              component: ()=>import('@/views/project/task/board/comment/index'),
+            },
+            {
+              path:'document',
+              name:'document',
+              component: ()=>import('@/views/project/task/board/document/index'),
+            },
+            {
+              path:'log',
+              name:'log',
+              component: ()=>import('@/views/project/task/board/log/index'),
+            }
+          ]
         },
         {
           path:'log',

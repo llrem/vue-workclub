@@ -17,7 +17,6 @@ const actions = {
     state.project = project
     sessionStorage.setItem("project",project)
   }
-
 }
 
 export default {

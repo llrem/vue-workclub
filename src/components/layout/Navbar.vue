@@ -30,6 +30,11 @@
       breadcrumb,
       hamburger
     },
+    created(){
+      this.$store.dispatch("user/getInfo").then(res=>{
+        this.avatar = res.icon
+      })
+    },
     computed: {
       ...mapGetters([
         'sidebar'

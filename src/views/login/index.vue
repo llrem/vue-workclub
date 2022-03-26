@@ -52,6 +52,7 @@
 <script>
   export default {
     name: "login",
+    inject:['reload'],
     data() {
       return{
         loginForm:{
@@ -112,8 +113,10 @@
           if(valid){
             this.loading = true
             this.$store.dispatch('user/register', this.loginForm).then(() => {
-              console.log("注册")
-              this.$router.push({path:'/login'})
+              this.$message({
+                message: '注册成功',
+                type: 'success'
+              });
               this.loading = false
             }).catch(() => {
               console.log("出错")

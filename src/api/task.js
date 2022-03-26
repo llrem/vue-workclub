@@ -95,9 +95,17 @@ export function deleteTag(data) {
   })
 }
 
-export function selectMember(params) {
+export function selectExecutor(params) {
   return request({
-    url: '/task/select_member',
+    url: '/task/select_executor',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function selectFollower(params) {
+  return request({
+    url: '/task/select_follower',
     method: 'get',
     params:params,
   })
@@ -117,5 +125,21 @@ export function changeDescription(params) {
     url: '/task/change_description',
     method: 'get',
     params:params,
+  })
+}
+
+export function getComments(params) {
+  return request({
+    url: '/task/get_comments',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function submitComments(data) {
+  return request({
+    url: '/task/submit_comments',
+    method: 'post',
+    data:data,
   })
 }

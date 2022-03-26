@@ -41,7 +41,7 @@ export function saveInfo(data) {
 
 export function saveAvatar(data) {
   return request({
-    url: '/user/saveAvatar',
+    url: '/user/save_avatar',
     method: 'post',
     data
   })
