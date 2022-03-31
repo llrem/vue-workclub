@@ -178,7 +178,7 @@
           </el-menu>
 
           <comment v-if="content === 1" :task-id="this.task.id"/>
-          <document v-if="content === 2"/>
+          <file v-if="content === 2" :task-id="this.task.id"/>
           <log v-if="content === 3"/>
 
         </div>
@@ -199,7 +199,7 @@
   } from "@/api/task";
   import {getProjectMembers} from "@/api/project";
   import comment from "@/views/project/task/board/comment"
-  import document from "@/views/project/task/board/document"
+  import file from "@/views/project/task/board/file"
   import log from "@/views/project/task/board/log"
 
     export default {
@@ -241,7 +241,7 @@
         task:''
       },
       components:{
-        comment,document,log
+        comment,file,log
       },
       computed: {
         key() {

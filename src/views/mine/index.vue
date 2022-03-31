@@ -136,7 +136,9 @@
             message: '保存成功',
             type: 'success'
           });
-          this.reload();
+          this.$store.dispatch("user/getInfo").then(res=>{
+            this.reload();
+          })
         }).catch(err=>{
           console.log(err)
         })

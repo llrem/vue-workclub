@@ -79,7 +79,7 @@ export default new Router({
             {
               path:'document',
               name:'document',
-              component: ()=>import('@/views/project/task/board/document/index'),
+              component: ()=>import('@/views/project/task/board/file/index'),
             },
             {
               path:'log',

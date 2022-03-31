@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="write-comment">
-      <img src="http://workclub-oss.oss-cn-chengdu.aliyuncs.com/workclub/user_avatar/1003/wallhaven-1kqj9g%20(1).jpg" alt="">
+      <img :src="this.icon" alt="">
       <el-input v-model="content" @keyup.enter.native="submit">
 
       </el-input>
@@ -31,7 +31,8 @@
     data(){
       return{
         comments:[],
-        content:''
+        content:'',
+        icon:''
       }
     },
     props:{
@@ -39,6 +40,9 @@
     },
     created(){
       this.getComments();
+      this.$store.dispatch("user/getInfo").then(user=>{
+        this.icon = user.icon
+      })
     },
     methods:{
       submit(){
@@ -94,7 +98,7 @@
     display: flex;
     align-items: center;
     height: 46px;
-    width: 100%;
+    width: 99%;
     background-color: #ffffff;
     position:absolute;
     bottom:0;

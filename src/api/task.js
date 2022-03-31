@@ -143,3 +143,19 @@ export function submitComments(data) {
     data:data,
   })
 }
+
+export function getFiles(params) {
+  return request({
+    url: '/task/get_files',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function addFile(data) {
+  return request({
+    url: '/task/add_file',
+    method: 'post',
+    data:data,
+  })
+}

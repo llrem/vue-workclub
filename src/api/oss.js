@@ -5,3 +5,11 @@ export function policy() {
     method:'get',
   })
 }
+
+export function deleteFile(params) {
+  return request({
+    url:'/aliyun/oss/delete',
+    method:'get',
+    params:params
+  })
+}
