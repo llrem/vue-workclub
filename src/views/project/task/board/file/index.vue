@@ -30,7 +30,7 @@
 <script>
   import upload from "@/components/upload"
   import {getFiles} from "@/api/task";
-  import {deleteFile, downloadFile} from "@/api/oss";
+  import {deleteFile} from "@/api/oss";
   export default {
     name: "index",
     data() {

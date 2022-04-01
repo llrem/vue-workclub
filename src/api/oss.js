@@ -6,6 +6,15 @@ export function policy() {
   })
 }
 
+export function downloadFile(params) {
+  return request({
+    url:'/aliyun/oss/download',
+    method:'get',
+    params:params,
+    responseType: 'blob'
+  })
+}
+
 export function deleteFile(params) {
   return request({
     url:'/aliyun/oss/delete',

@@ -159,3 +159,20 @@ export function addFile(data) {
     data:data,
   })
 }
+
+export function addLog(data) {
+  return request({
+    url: '/task/add_log',
+    method: 'post',
+    data:data,
+  })
+}
+
+
+export function getLogList(params) {
+  return request({
+    url: '/task/get_logList',
+    method: 'get',
+    params:params,
+  })
+}
