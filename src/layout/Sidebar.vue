@@ -16,28 +16,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import SidebarItem from '@/components/layout/sidebar/SidebarItem'
+import SidebarItem from '@/components/sidebarItem'
 import variables from '@/styles/variables.scss'
 
 export default {
   components: { SidebarItem },
   computed: {
-    ...mapGetters([
-      'sidebar'
-    ]),
     routes() {
       return this.$router.options.routes
     },
     activeMenu() {
-      const route = this.$route
-      return route.path
+      return this.$route.path
     },
     variables() {
       return variables
     },
     isCollapse() {
-      return !this.sidebar;
+      return !this.$store.getters.sidebar
     }
   }
 }

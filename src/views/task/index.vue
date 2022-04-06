@@ -20,13 +20,13 @@
               <el-menu-item index="/task/board"><router-link to="/task/board">任务看板</router-link></el-menu-item>
               <el-menu-item index="/task/member"><router-link to="/task/member">成员管理</router-link></el-menu-item>
               <el-menu-item index="/task/log"><router-link to="/task/log">项目日志</router-link></el-menu-item>
+              <el-menu-item index="/task/file"><router-link to="/task/file">文件管理</router-link></el-menu-item>
               <el-menu-item index="/task/statistic"><router-link to="/task/statistic">数据统计</router-link></el-menu-item>
               <el-menu-item index="/task/setting"><router-link to="/task/setting">基本设置</router-link></el-menu-item>
             </el-menu>
           </div>
         </div>
         <div class="setting">
-          <div class="invite">invite</div>
           <div class="avatar">
             <el-dropdown trigger="click">
               <img :src="avatar" alt=""/>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-  import Sidebar from '@/components/layout/Sidebar'
+  import Sidebar from '@/layout/Sidebar'
   export default {
     name: "index",
     components: {
@@ -57,23 +57,18 @@
     data() {
       return {
         loading:true,
-        project:[],
+        project:'',
         avatar:this.$store.getters.userInfo.icon
       };
     },
     created(){
-      this.$store.dispatch('app/getProject').then(project=>{
-        this.project = project;
-      })
+      this.project = this.$store.getters.project
     },
     computed: {
       key() {
         return this.$route.path
       },
     },
-    methods: {
-
-    }
   }
 </script>
 
@@ -142,16 +137,6 @@
   .setting{
     display: flex;
     align-items: center;
-    height: 50px;
-    .invite{
-      width: 60px;
-      height: 26px;
-      background-color: #ffc0cb;
-      margin: 12px 5px;
-      border-radius: 3px;
-      padding: 3px 12px;
-      color: white;
-    }
     .avatar{
       margin: 0 10px;
       width: 38px;

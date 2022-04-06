@@ -86,15 +86,12 @@
           if(valid){
             this.loading = true
             this.$store.dispatch('user/login', this.loginForm).then(() => {
-              this.$store.dispatch('user/getInfo')
               this.$router.push({path:'/'})
               this.loading = false
             }).catch(() => {
-              console.log("出错")
               this.loading = false
             })
           }else {
-            console.log('error submit!!')
             return false
           }
         })
@@ -113,17 +110,12 @@
           if(valid){
             this.loading = true
             this.$store.dispatch('user/register', this.loginForm).then(() => {
-              this.$message({
-                message: '注册成功',
-                type: 'success'
-              });
+              this.$message({ message: '注册成功', type: 'success'});
               this.loading = false
             }).catch(() => {
-              console.log("出错")
               this.loading = false
             })
           }else {
-            console.log('error submit!!')
             return false
           }
         })

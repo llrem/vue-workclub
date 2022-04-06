@@ -36,10 +36,9 @@
 </template>
 
 <script>
-  import task from '@/components/board/task'
-  import board from '@/components/board'
+  import task from '@/components/task/index'
+  import board from '@/components/board/index'
   import {addList,getBoards,deleteBoard} from "@/api/task";
-  import {getProjectMembers} from "@/api/project";
 
   export default {
     inject:['reload'],
@@ -59,28 +58,20 @@
       }
     },
     created(){
-      this.$store.dispatch('app/getProject').then(project=>{
-        getBoards({projectId:project.id}).then(res=>{
-          this.boards = res.data;
-        }).catch(err=>{
-          console.log(err)
-        })
+      getBoards({projectId:this.$store.getters.project.id}).then(res=>{
+        this.boards = res.data;
       })
     },
     methods:{
       submit(){
-        this.$store.dispatch('app/getProject').then(project=>{
-          this.form.projectId = project.id
-          addList(this.form).then(res=>{
-            this.$message({
-              message: '创建成功',
-              type: 'success'
-            });
-            this.visible = false
-            this.reload()
-          }).catch(err=>{
-            console.log(err)
-          })
+        this.form.projectId = this.$store.getters.project.id
+        addList(this.form).then(()=>{
+          this.$message({
+            message: '创建成功',
+            type: 'success'
+          });
+          this.visible = false
+          this.reload()
         })
       },
       deleteBoard(id) {
@@ -90,8 +81,6 @@
             type: 'success'
           });
           this.reload()
-        }).catch(err=>{
-          console.log(err)
         })
       }
     }

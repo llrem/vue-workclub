@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 
 const state = {
-  //sidebar: Cookies.get('sidebarStatus')失效，为什么？
-  sidebar: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus') : true
+  sidebar: parseInt(Cookies.get('sidebarStatus'))
 }
 
 const mutations = {
   TOGGLE_SIDEBAR: state => {
-    state.sidebar = !state.sidebar
+    state.sidebar = state.sidebar ? 0 : 1
+    console.log("TOGGLE_SIDEBAR")
     if (state.sidebar) {
       Cookies.set('sidebarStatus', 1)
     } else {
@@ -16,7 +16,7 @@ const mutations = {
   },
   CLOSE_SIDEBAR: (state) => {
     Cookies.set('sidebarStatus', 0)
-    state.sidebar = false
+    state.sidebar = 0
   },
 }
 
@@ -26,7 +26,7 @@ const actions = {
   },
   closeSideBar({ commit }) {
     commit('CLOSE_SIDEBAR')
-  },
+  }
 }
 
 export default {

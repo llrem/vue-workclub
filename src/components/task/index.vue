@@ -8,6 +8,7 @@
         <div class="tags" v-for="tag in tags" :key="tag.id">{{tag.name}}</div>
       </div>
     </div>
+
     <el-dialog :show-close=false :visible.sync="dialogVisible" @close="close">
       <div class="dialog-header">
         <div>
@@ -170,6 +171,7 @@
             </div>
           </div>
         </div>
+
         <div class="task-menu">
           <el-menu default-active="1" class="el-menu-demo" mode="horizontal">
             <el-menu-item index="1" @click="to(1)"><i class="el-icon-chat-dot-round"></i>讨论</el-menu-item>
@@ -180,7 +182,6 @@
           <comment v-if="content === 1" :task-id="this.task.id"/>
           <file v-if="content === 2" :task-id="this.task.id"/>
           <log ref="log" v-if="content === 3" :task-id="this.task.id"/>
-
         </div>
       </div>
     </el-dialog>
@@ -199,10 +200,9 @@
     getTaskInfo, removeExecutor, selectExecutor, selectFollower
   } from "@/api/task";
   import {getProjectMembers} from "@/api/project";
-  import comment from "@/views/project/task/board/comment"
-  import file from "@/views/project/task/board/file"
-  import log from "@/views/project/task/board/log"
-  import format from "@/utils/formatDate"
+  import comment from "@/views/task/board/comment/index"
+  import file from "@/views/task/board/file/index"
+  import log from "@/views/task/board/log/index"
 
     export default {
       name: "task",
@@ -326,12 +326,12 @@
           //this.reload();
         },
         statusChange(status){
-          changeTaskStatus({taskId:this.task.id, status:status}).then(res=>{
+          changeTaskStatus({taskId:this.task.id, status:status}).then(()=>{
             switch (status) {
               case 1:{
                 this.status = '未完成'
                 this.statusBColor = 'status-color1'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'未完成', type:2}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'未完成', type:2}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -339,7 +339,7 @@
               case 2:{
                 this.status = '进行中'
                 this.statusBColor = 'status-color2'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'进行中', type:2}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'进行中', type:2}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -347,7 +347,7 @@
               case 3:{
                 this.status = '已完成'
                 this.statusBColor = 'status-color3'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'已完成', type:2}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'已完成', type:2}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -356,12 +356,12 @@
           })
         },
         priorityChange(priority){
-          changeTaskPriority({taskId:this.task.id, priority:priority}).then(res=>{
+          changeTaskPriority({taskId:this.task.id, priority:priority}).then(()=>{
             switch (priority) {
               case 1:{
                 this.priority = '普通'
                 this.priorityBColor = 'priority-color1'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'普通', type:6}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'普通', type:6}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -369,7 +369,7 @@
               case 2:{
                 this.priority = '紧急'
                 this.priorityBColor = 'priority-color2'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'紧急', type:6}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'紧急', type:6}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -377,7 +377,7 @@
               case 3:{
                 this.priority = '非常紧急'
                 this.priorityBColor = 'priority-color3'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'非常紧急', type:6}).then(res=>{
+                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'非常紧急', type:6}).then(()=>{
                   if(this.content===3) this.$refs.log.getLogList()
                 })
                 break;
@@ -389,7 +389,7 @@
           //this.tags.splice(this.tags.indexOf(tag), 1);
           deleteTag({id:id,taskId:this.task.id}).then(res=>{
             this.tags = res.data;
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:name, type:8}).then(res=>{
+            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:name, type:8}).then(()=>{
               if(this.content===3) this.$refs.log.getLogList()
             })
           })
@@ -404,7 +404,7 @@
           let inputValue = this.inputValue;
           addTag({taskId:this.task.id,name:inputValue}).then(res=>{
             this.tags = res.data
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:inputValue, type:7}).then(res=>{
+            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:inputValue, type:7}).then(()=>{
               if(this.content===3) this.$refs.log.getLogList()
             })
           })
@@ -414,14 +414,14 @@
         changeStartDate(){
           changeStartDate({id:this.task.id, date:this.startDate})
           let date = this.startDate.Format("yyyy-MM-dd hh:mm:ss");
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:date, type:4}).then(res=>{
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:date, type:4}).then(()=>{
             if(this.content===3) this.$refs.log.getLogList()
           })
         },
         changeDueDate(){
           changeDueDate({id:this.task.id, date:this.dueDate})
           let date = this.dueDate.Format("yyyy-MM-dd hh:mm:ss");
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:date, type:5}).then(res=>{
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:date, type:5}).then(()=>{
             if(this.content===3) this.$refs.log.getLogList()
           })
         },
@@ -429,7 +429,7 @@
           changeDescription({taskId:this.task.id,description:event.target.innerText}).then(res=>{
             this.description = res.data
           })
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:event.target.innerText, type:1}).then(res=>{
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:event.target.innerText, type:1}).then(()=>{
             if(this.content===3) this.$refs.log.getLogList()
           })
         },
@@ -450,7 +450,7 @@
               this.memberId=''
               this.userSelectVisible = false
             })
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:3}).then(res=>{
+            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:3}).then(()=>{
               if(this.content===3) this.$refs.log.getLogList()
             })
           }
@@ -458,7 +458,7 @@
         submitFollowerSelection(){
           selectFollower({taskId:this.task.id,memberId:this.memberId}).then(res=>{
             this.followers.push(res.data)
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:9}).then(res=>{
+            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:9}).then(()=>{
               if(this.content===3) this.$refs.log.getLogList()
             })
             this.$message({
@@ -468,15 +468,12 @@
           })
         },
         getMembers(){
-          this.$store.dispatch("app/getProject").then(project=>{
-            getProjectMembers({projectId:project.id}).then(res=>{
-              this.members = res.data;
-              console.log(this.members);
-            })
+          getProjectMembers({projectId:this.$store.getters.project.id}).then(res=>{
+            this.members = res.data;
           })
         },
         removeExecutor(){
-          removeExecutor({taskId:this.task.id}).then(res=>{
+          removeExecutor({taskId:this.task.id}).then(()=>{
             this.executor = 'Not Assigned'
             this.hideExecutorIcon = false
           })

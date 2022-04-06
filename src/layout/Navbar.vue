@@ -23,7 +23,7 @@
   export default {
     data() {
       return{
-        avatar:this.$store.getters.userInfo.icon
+        avatar:''
       }
     },
     components: {
@@ -31,20 +31,11 @@
       hamburger
     },
     created(){
-      this.$store.dispatch("user/getInfo").then(res=>{
-        this.avatar = res.icon
-      })
+      this.avatar = this.$store.getters.userInfo.icon
     },
     computed: {
-      ...mapGetters([
-        'sidebar'
-      ]),
-      isActive:{
-        get(){
-          return this.sidebar
-        },
-        set(){
-        }
+      isActive(){
+        return !!this.$store.getters.sidebar
       }
     },
     methods: {

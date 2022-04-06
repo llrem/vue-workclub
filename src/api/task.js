@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function addTask(data) {
   return request({
-    url: '/task/add_task',
+    url: '/task/board/add_task',
     method: 'post',
     data:data
   })
@@ -10,14 +10,14 @@ export function addTask(data) {
 
 export function getTasks(params) {
   return request({
-    url: '/task/get_tasks',
+    url: '/task/board/get_tasks',
     method: 'get',
     params:params
   })
 }
 export function addList(data) {
   return request({
-    url: '/task/add_board',
+    url: '/task/board/add_board',
     method: 'post',
     data:data
   })
@@ -25,7 +25,7 @@ export function addList(data) {
 
 export function getBoards(params) {
   return request({
-    url: '/task/get_boards',
+    url: '/task/board/get_boards',
     method: 'get',
     params:params,
   })
@@ -33,7 +33,7 @@ export function getBoards(params) {
 
 export function deleteBoard(params) {
   return request({
-    url: '/task/delete_board',
+    url: '/task/board/delete_board',
     method: 'get',
     params:params,
   })
@@ -41,7 +41,7 @@ export function deleteBoard(params) {
 
 export function getTaskInfo(params) {
   return request({
-    url: '/task/get_task_info',
+    url: '/task/board/get_task_info',
     method: 'get',
     params:params,
   })
@@ -49,7 +49,7 @@ export function getTaskInfo(params) {
 
 export function changeTaskStatus(params) {
   return request({
-    url: '/task/change_task_status',
+    url: '/task/board/change_task_status',
     method: 'get',
     params:params,
   })
@@ -57,7 +57,7 @@ export function changeTaskStatus(params) {
 
 export function changeTaskPriority(params) {
   return request({
-    url: '/task/change_task_priority',
+    url: '/task/board/change_task_priority',
     method: 'get',
     params:params,
   })
@@ -65,7 +65,7 @@ export function changeTaskPriority(params) {
 
 export function changeStartDate(data) {
   return request({
-    url: '/task/change_start_date',
+    url: '/task/board/change_start_date',
     method: 'post',
     data:data,
   })
@@ -73,7 +73,7 @@ export function changeStartDate(data) {
 
 export function changeDueDate(data) {
   return request({
-    url: '/task/change_due_date',
+    url: '/task/board/change_due_date',
     method: 'post',
     data:data,
   })
@@ -81,7 +81,7 @@ export function changeDueDate(data) {
 
 export function addTag(data) {
   return request({
-    url: '/task/add_tag',
+    url: '/task/board/add_tag',
     method: 'post',
     data:data,
   })
@@ -89,7 +89,7 @@ export function addTag(data) {
 
 export function deleteTag(data) {
   return request({
-    url: '/task/delete_tag',
+    url: '/task/board/delete_tag',
     method: 'post',
     data:data,
   })
@@ -97,7 +97,7 @@ export function deleteTag(data) {
 
 export function selectExecutor(params) {
   return request({
-    url: '/task/select_executor',
+    url: '/task/board/select_executor',
     method: 'get',
     params:params,
   })
@@ -105,7 +105,7 @@ export function selectExecutor(params) {
 
 export function selectFollower(params) {
   return request({
-    url: '/task/select_follower',
+    url: '/task/board/select_follower',
     method: 'get',
     params:params,
   })
@@ -113,7 +113,7 @@ export function selectFollower(params) {
 
 export function removeExecutor(params) {
   return request({
-    url: '/task/remove_executor',
+    url: '/task/board/remove_executor',
     method: 'get',
     params:params,
   })
@@ -122,7 +122,7 @@ export function removeExecutor(params) {
 
 export function changeDescription(params) {
   return request({
-    url: '/task/change_description',
+    url: '/task/board/change_description',
     method: 'get',
     params:params,
   })
@@ -130,7 +130,7 @@ export function changeDescription(params) {
 
 export function getComments(params) {
   return request({
-    url: '/task/get_comments',
+    url: '/task/board/get_comments',
     method: 'get',
     params:params,
   })
@@ -138,7 +138,7 @@ export function getComments(params) {
 
 export function submitComments(data) {
   return request({
-    url: '/task/submit_comments',
+    url: '/task/board/submit_comments',
     method: 'post',
     data:data,
   })
@@ -146,7 +146,7 @@ export function submitComments(data) {
 
 export function getFiles(params) {
   return request({
-    url: '/task/get_files',
+    url: '/task/board/get_files',
     method: 'get',
     params:params,
   })
@@ -154,7 +154,7 @@ export function getFiles(params) {
 
 export function addFile(data) {
   return request({
-    url: '/task/add_file',
+    url: '/task/board/add_file',
     method: 'post',
     data:data,
   })
@@ -162,7 +162,7 @@ export function addFile(data) {
 
 export function addLog(data) {
   return request({
-    url: '/task/add_log',
+    url: '/task/board/add_log',
     method: 'post',
     data:data,
   })
@@ -171,7 +171,7 @@ export function addLog(data) {
 
 export function getLogList(params) {
   return request({
-    url: '/task/get_logList',
+    url: '/task/board/get_logList',
     method: 'get',
     params:params,
   })

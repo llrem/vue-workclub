@@ -46,7 +46,7 @@ export default new Router({
         {
           path: 'my-project',
           name: 'my-project',
-          component: () => import('@/views/project/myProject/index'),
+          component: () => import('@/views/project/project/index'),
           meta: { title: '我的项目', icon: 'el-icon-s-help' },
         },
         {
@@ -62,51 +62,56 @@ export default new Router({
       path:'/task',
       name:'task',
       redirect:'task/board',
-      component: ()=>import('@/views/project/task/index'),
+      component: ()=>import('@/views/task/index'),
       hidden: true,
       meta: { title: '任务'},
       children: [
         {
           path:'board',
           name:'board',
-          component: ()=>import('@/views/project/task/board/index'),
+          component: ()=>import('@/views/task/board/index'),
           children: [
             {
               path:'comment',
               name:'comment',
-              component: ()=>import('@/views/project/task/board/comment/index'),
+              component: ()=>import('@/views/task/board/comment/index'),
             },
             {
               path:'document',
               name:'document',
-              component: ()=>import('@/views/project/task/board/file/index'),
+              component: ()=>import('@/views/task/board/file/index'),
             },
             {
               path:'log',
               name:'log',
-              component: ()=>import('@/views/project/task/board/log/index'),
+              component: ()=>import('@/views/task/board/log/index'),
             }
           ]
         },
         {
+          path:'file',
+          name:'file',
+          component: ()=>import('@/views/task/file/index'),
+        },
+        {
           path:'log',
           name:'log',
-          component: ()=>import('@/views/project/task/log/index'),
+          component: ()=>import('@/views/task/log/index'),
         },
         {
           path:'member',
           name:'member',
-          component: ()=>import('@/views/project/task/member/index'),
+          component: ()=>import('@/views/task/member/index'),
         },
         {
           path:'setting',
           name:'setting',
-          component: ()=>import('@/views/project/task/setting/index'),
+          component: ()=>import('@/views/task/setting/index'),
         },
         {
           path:'statistic',
           name:'statistic',
-          component: ()=>import('@/views/project/task/statistic/index'),
+          component: ()=>import('@/views/task/statistic/index'),
         }
       ]
     },
@@ -162,7 +167,7 @@ export default new Router({
         {
           path: '/setting',
           name: 'setting',
-          component: () => import('@/views/setting/test3'),
+          component: () => import('@/views/setting/index'),
         }
       ]
     },

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <p>member</p>
+    <p>file</p>
   </div>
 </template>
 

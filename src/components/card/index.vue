@@ -24,14 +24,9 @@
     methods:{
       goto(){
         this.$store.dispatch('settings/closeSideBar')
-        this.$store.dispatch('app/setProject',JSON.stringify(this.project))
+        this.$store.dispatch('app/setProject',this.project)
         this.$router.push('/task');
       }
-    },
-    created(){
-      console.log(this.title)
-      console.log(this.imgSrc)
-      console.log(this.project)
     }
   }
 </script>

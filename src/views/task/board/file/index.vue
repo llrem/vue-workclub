@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import upload from "@/components/upload"
+  import upload from "@/components/upload/index"
   import {getFiles} from "@/api/task";
   import {deleteFile} from "@/api/oss";
   export default {

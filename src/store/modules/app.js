@@ -4,18 +4,16 @@ const state = {
 }
 
 const mutations = {
-
+  SET_PROJECT: (state, project) => {
+    state.project = project;
+  }
 }
 
 const actions = {
-  getProject(){
-    return new Promise((resolve) => {
-      resolve(JSON.parse(sessionStorage.getItem("project")))
-    })
-  },
-  setProject({ commit, state },project){
-    state.project = project
-    sessionStorage.setItem("project",project)
+  setProject({ commit },project){
+    commit("SET_PROJECT",project)
+    console.log(project)
+    sessionStorage.setItem("project",JSON.stringify(project))
   }
 }
 

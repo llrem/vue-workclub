@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import task from '@/components/board/task'
+  import task from '@/components/task'
   import {addTask,getTasks} from "@/api/task";
 
   export default {
@@ -63,7 +63,7 @@
     },
     methods:{
       submit(){
-        addTask(this.form).then(res=>{
+        addTask(this.form).then(()=>{
           this.$message({
             message: '添加成功',
             type: 'success'
@@ -91,7 +91,7 @@
   .tasks{
     margin: 3px 0 8px 0;
     width: 275px;
-    height: calc(100vh - 207px);
+    height: calc(100vh - 203px);
     overflow-x: hidden;
     overflow-y: auto;
   }
