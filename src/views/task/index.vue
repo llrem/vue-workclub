@@ -1,16 +1,10 @@
 <template>
-  <div class="hideSidebar">
+  <div :class="classObj">
     <sidebar class="sidebar-container"/>
     <div class="main-container">
       <div class="navbar">
         <div class="menu">
-          <svg
-            class="icon"
-            viewBox="0 0 1024 1024"
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-          ><path d="M369.728 512l384.768-384.704a48.64 48.64 0 0 0 0.896-68.8 48.64 48.64 0 0 0-68.736 0.96L269.44 476.736a48.704 48.704 0 0 0-11.136 17.344c-1.024 2.304-1.024 4.736-1.472 7.04-0.896 3.648-2.048 7.168-2.048 10.88 0 3.712 1.152 7.232 1.984 10.88 0.512 2.368 0.512 4.8 1.472 7.04a48.704 48.704 0 0 0 11.136 17.344l417.216 417.28a48.576 48.576 0 0 0 68.736 0.96 48.576 48.576 0 0 0-0.896-68.736L369.728 512z" fill="#8a8a8a" /></svg>
+          <hamburger :is-active="isActive" class="hamburger-container" @toggleClick="toggleSideBar"/>
           <div class="img">
             <img :src="project.picture" alt="">
           </div>
@@ -19,7 +13,6 @@
             <el-menu :default-active="$route.path" mode="horizontal">
               <el-menu-item index="/task/board"><router-link to="/task/board">任务看板</router-link></el-menu-item>
               <el-menu-item index="/task/member"><router-link to="/task/member">成员管理</router-link></el-menu-item>
-              <el-menu-item index="/task/log"><router-link to="/task/log">项目日志</router-link></el-menu-item>
               <el-menu-item index="/task/file"><router-link to="/task/file">文件管理</router-link></el-menu-item>
               <el-menu-item index="/task/statistic"><router-link to="/task/statistic">数据统计</router-link></el-menu-item>
               <el-menu-item index="/task/setting"><router-link to="/task/setting">基本设置</router-link></el-menu-item>
@@ -49,10 +42,12 @@
 
 <script>
   import Sidebar from '@/layout/Sidebar'
+  import hamburger from "@/components/hamburger/index";
   export default {
     name: "index",
     components: {
-      Sidebar
+      Sidebar,
+      hamburger
     },
     data() {
       return {
@@ -68,7 +63,30 @@
       key() {
         return this.$route.path
       },
+      isActive: {
+        get(){
+          return !!this.$store.getters.sidebar
+        },
+        set(isActive){
+          return isActive;
+        }
+      },
+      sidebar() {
+        return this.$store.state.settings.sidebar
+      },
+      classObj() {
+        return {
+          hideSidebar: !this.sidebar,
+          openSidebar: this.sidebar,
+        }
+      }
     },
+    methods: {
+      toggleSideBar() {
+        this.$store.dispatch('settings/toggleSideBar')
+        this.isActive = !this.isActive
+      }
+    }
   }
 </script>
 
@@ -84,6 +102,22 @@
     width: 100%;
     padding: 0 10px;
     border-bottom: solid 1px #ebebeb;
+  }
+  .hamburger-container {
+    padding: 5px !important;
+    line-height: 46px;
+    height: 100%;
+    float: left;
+    cursor: pointer;
+    transition: background .3s;
+    -webkit-tap-highlight-color:transparent;
+    &:hover {
+      background: rgba(0, 0, 0, .025)
+    }
+    >>> .hamburger{         // >>>作用？
+      width: 24px;
+      height: 24px;
+    }
   }
   .menu{
     display: flex;

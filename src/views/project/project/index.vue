@@ -106,9 +106,6 @@
     created() {
       getProjects({id:this.$store.getters.userInfo.id}).then(res => {
         this.projects = res.data;
-        console.log(this.projects)
-      }).catch(err => {
-        console.log(err)
       })
     },
     methods:{
@@ -122,15 +119,10 @@
       },
       onSubmit() {
         createProject(this.form).then(res => {
-          console.log(res)
-          this.$message({
-            message: '创建成功',
-            type: 'success'
-          });
+          this.$message.success("创建成功")
           this.dialogVisible = false;
           this.reload()
-        }).catch(err => {
-          console.log(err)
+        }).catch(() => {
           this.$message.error('创建失败');
         })
       },
@@ -140,13 +132,8 @@
             this.$message.error('无记录');
           }else{
             this.projects=res.data
-            this.$message({
-              message: '查询成功',
-              type: 'success'
-            });
+            this.$message.success("查询成功")
           }
-        }).catch(err => {
-          console.log(err)
         })
       },
       // 自定义上传
@@ -188,10 +175,9 @@
             _this.dataObj.policy = res.data.policy;
             _this.dataObj.signature = res.data.signature;
             _this.dataObj.ossaccessKeyId = res.data.accessKeyId;
-            _this.dataObj.key = res.data.dir +'project_cover/'+this.form.createUserId+ '/${filename}';
-            _this.dataObj.dir = res.data.dir+'project_cover/'+this.form.createUserId;
+            _this.dataObj.key = res.data.dir +'project_cover/'+this.$store.getters.project.id+ '/${filename}';
+            _this.dataObj.dir = res.data.dir+'project_cover/'+this.$store.getters.project.id;
             _this.dataObj.host = res.data.host;
-            console.log(_this.dataObj)
             resolve(true)
           }).catch(err => {
             console.log(err)
@@ -202,7 +188,6 @@
       //上传成功后的处理
       handleUploadSuccess(res, file) {
         this.form.picture = this.dataObj.host + '/' + this.dataObj.dir + '/'+ file.name
-        console.log(this.form.picture)
       }
     }
   }
@@ -212,7 +197,6 @@
   .project-wrapper{
     width: 100%;
     padding: 10px;
-
     .navbar{
       height: 57px;
       padding: 10px;
@@ -224,7 +208,6 @@
       overflow: auto;
     }
   }
-
   .search{
     color: #333333;
     border: 1px solid #409EFF;
@@ -233,12 +216,10 @@
     height: 37px;
     float: left;
   }
-
   .el-input {
     display: inline-block;
     height: 35px;
     width: 266px;
-
     input {
       background: transparent;
       border: 0;
@@ -247,17 +228,17 @@
       height: 35px;
     }
   }
-  i{
-    float: left;
-    margin: 9px 6px 10px 10px;
+  .uploadImg{
+    i{
+      float: left;
+      margin: 9px 6px 10px 10px;
+    }
   }
-
   .el-button{
     display: inline-block;
     float: right;
     margin-left: 5px;
   }
-
   .add-project{
     width: 220px;
     height: 146px;
@@ -295,7 +276,6 @@
       display: none;
     }
   }
-
   .el-dialog{
     .el-input {
       width: 100%;
@@ -306,9 +286,12 @@
   }
 </style>
 
-
 <style lang="scss">
   .search{
+    i{
+      float: left;
+      margin: 9px 6px 10px 10px;
+    }
     .el-input__inner{
       color: #333333;
       border: none;

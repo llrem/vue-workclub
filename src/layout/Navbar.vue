@@ -16,7 +16,6 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
   import breadcrumb from '@/components/breadcrumb/index'
   import hamburger from '@/components/hamburger/index'
 
@@ -34,8 +33,13 @@
       this.avatar = this.$store.getters.userInfo.icon
     },
     computed: {
-      isActive(){
-        return !!this.$store.getters.sidebar
+      isActive: {
+        get(){
+          return !!this.$store.getters.sidebar
+        },
+        set(isActive){
+          return isActive;
+        }
       }
     },
     methods: {

@@ -32,6 +32,14 @@ export function getProjectMembers(params) {
   })
 }
 
+export function updateCover(data) {
+  return request({
+    url: '/project/update_cover',
+    method: 'post',
+    data:data
+  })
+}
+
 // 上传图片至本地
 // export function uploadImg(data,username) {
 //   const formData = new FormData()

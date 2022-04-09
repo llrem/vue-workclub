@@ -94,11 +94,6 @@ export default new Router({
           component: ()=>import('@/views/task/file/index'),
         },
         {
-          path:'log',
-          name:'log',
-          component: ()=>import('@/views/task/log/index'),
-        },
-        {
           path:'member',
           name:'member',
           component: ()=>import('@/views/task/member/index'),

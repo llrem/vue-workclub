@@ -37,3 +37,5 @@ Date.prototype.Format = function(format)
   }
   return format;
 }
+
+export default Date;

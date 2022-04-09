@@ -23,7 +23,6 @@
     },
     methods:{
       goto(){
-        this.$store.dispatch('settings/closeSideBar')
         this.$store.dispatch('app/setProject',this.project)
         this.$router.push('/task');
       }

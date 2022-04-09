@@ -37,7 +37,7 @@
         height: 100%;
         float: left;
         border-radius: 15px;
-        background-color: #F0ECE3;
+        //background-color: #F0ECE3;
       }
       .info{
         width: 30%;
@@ -50,13 +50,13 @@
           height: 50%;
           border-radius: 15px;
           margin-bottom: 10px;
-          background-color:  #F0ECE3;
+          //background-color:  #F0ECE3;
         }
         .notice{
           width: 100%;
           height: 48% ;
           border-radius: 15px;
-          background-color:  #F0ECE3;;
+          //background-color:  #F0ECE3;;
         }
       }
     }
