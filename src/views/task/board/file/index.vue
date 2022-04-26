@@ -2,7 +2,7 @@
   <div class="document-wrapper">
     <div class="upload">
       <label style="float: left;color: darkgrey;font-size: 14px">当前有 {{fileList.length}} 个文件</label>
-      <upload :task-id="this.taskId" @getFiles="getFiles">
+      <upload :object-name="'file/task/'+this.taskId" @uploadSuccess="uploadSuccess">
         <label><i class="el-icon-upload"></i>上传附件</label>
       </upload>
     </div>
@@ -14,7 +14,7 @@
           xmlns="http://www.w3.org/2000/svg"
           width="22"
           height="22">
-          <path d="M679.814 62.381H128.692v897.177h768.434V255.079L679.814 62.381zM203.758 890.606V131.333h414.026v188.205H822.06v571.068H203.758z" fill="#8a8a8a" p-id="13360"></path><path d="M293.825 417.364H746.64v67.229H293.825zM293.825 577.709H746.64v67.229H293.825zM293.825 738.054H746.64v67.229H293.825z" fill="#8a8a8a"/>
+          <path d="M913.29536 941.04064c0.0256 24.82688-16.54784 44.96384-37.0176 44.98432l-708.23936 0.6912c-20.46464 0.02048-37.07904-20.08576-37.10464-44.91264l-0.83968-859.02848c-0.0256-24.82688 16.54784-44.96384 37.0176-44.98432l521.10848-0.50688 224.39424 210.50368 0.68096 693.25312z" fill="#E6E4E2" p-id="7440"></path><path d="M913.29536 253.26592l-189.11744 0.18432c-20.46464 0.02048-37.07904-20.08576-37.10464-44.91264l-0.16384-165.77024 226.38592 210.49856z" fill="#C4BCB1" p-id="7441"></path><path d="M720.72192 396.84096a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848zM720.72192 565.95456a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848zM720.72192 746.33728a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848z" fill="#C4BCB1"/>
         </svg>
         <label class="file-name">{{file.name}}</label>
       </div>
@@ -29,7 +29,7 @@
 
 <script>
   import upload from "@/components/upload/index"
-  import {getFiles} from "@/api/task";
+  import {addFile, getFiles} from "@/api/task";
   import {deleteFile} from "@/api/oss";
   export default {
     name: "index",
@@ -60,10 +60,13 @@
       deleteFile(id){
         deleteFile({id:id}).then(res=>{
           this.getFiles()
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          });
+          this.$message.success("删除成功")
+        })
+      },
+      uploadSuccess(message){
+        addFile({taskId:this.taskId,path:message.dataObj.dir,name:message.file.name}).then(()=>{
+          this.$message.success("上传成功")
+          this.getFiles();
         })
       }
     }

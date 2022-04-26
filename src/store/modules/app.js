@@ -12,7 +12,6 @@ const mutations = {
 const actions = {
   setProject({ commit },project){
     commit("SET_PROJECT",project)
-    console.log(project)
     sessionStorage.setItem("project",JSON.stringify(project))
   }
 }

@@ -1,128 +1,111 @@
 <template>
   <div class="setting-wrapper">
     <el-form ref="form" :model="form">
-      <el-form-item>
+      <el-form-item class="id">
         <label>项目编号</label>
         <el-input v-model="form.id" disabled></el-input>
       </el-form-item>
       <el-form-item>
         <label>项目名称</label>
-        <el-input v-model="form.name"></el-input>
+        <el-input v-model="form.name" @keyup.enter.native="updateName"></el-input>
       </el-form-item>
       <el-form-item>
-        <label>项目封面</label>
-        <div class="uploadImg">
-          <el-upload
-            action="http://workclub-oss.oss-cn-chengdu.aliyuncs.com"
-            :data="dataObj"
-            ref="upload"
-            list-type="picture-card"
-            :class="{hide: !hideUpload}"
-            :on-preview="handlePreview"
-            :before-upload="beforeUpload"
-            :on-change="uploadChange"
-            :on-remove="handleRemove"
-            :on-success="handleUploadSuccess"
-            :multiple="false">
-            <i ref="file" class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog
-            :visible.sync="imgDialogVisible"
-            :append-to-body="true">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
+        <p>项目封面</p>
+        <div style="display: flex;align-items: flex-end">
+          <img class="cover" :src="form.picture" alt=""/>
+          <upload class="upload" :object-name="'project_cover'" @uploadSuccess="uploadSuccess">
+            <el-button>上传封面</el-button>
+          </upload>
         </div>
       </el-form-item>
       <el-form-item>
         <label>项目描述</label>
-        <el-input type="textarea" v-model="form.description"></el-input>
+        <el-input type="textarea" v-model="form.description" @blur.prevent="updateDescription"></el-input>
       </el-form-item>
-      <el-form-item>
-        <p>归档项目</p>
-        <el-button type="primary">归档项目</el-button>
-      </el-form-item>
-      <el-form-item>
-        <p>删除项目</p>
-        <el-button type="danger">删除项目</el-button>
+      <el-form-item style="display: flex;">
+        <div class="archive">
+          <p>归档项目</p>
+          <el-button type="primary" @click="archiveProject">归档项目</el-button>
+        </div>
+        <div class="delete">
+          <p>删除项目</p>
+          <el-button type="danger" @click="deleteProject">删除项目</el-button>
+        </div>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-  import {policy} from "@/api/oss";
-  import {updateCover} from "@/api/project";
+  import {archiveProject, deleteProject, getProject, updateCover, updateDescription, updateName} from "@/api/project";
+  import upload from "@/components/upload"
 
   export default {
     name: "index",
     data(){
       return{
         form:{
+          id:'',
           name:'',
+          picture:'',
           description:''
-        },
-        dataObj: {
-          policy: '',
-          signature: '',
-          key: '',
-          ossaccessKeyId: '',
-          dir: '',
-          host: ''
-        },
-        hideUpload: true,
-        imgDialogVisible:false,
-        dialogImageUrl:'',
+        }
       }
     },
+    components:{
+      upload
+    },
+    created(){
+      let {id,name,picture,description} = this.$store.getters.project
+      this.form.id = id
+      this.form.name = name
+      this.form.picture = picture
+      this.form.description = description
+    },
     methods: {
-      //当检测到有上传更改时调用
-      uploadChange() {
-        this.hideUpload = false
-        if (this.$refs.upload.uploadFiles.length > 1) {
-          this.$refs.upload.uploadFiles.splice(0, 1)
-        }
+      updateName(){
+        updateName({
+          id:this.$store.getters.project.id,
+          name:this.form.name
+        }).then(()=>{
+          this.updateProject()
+        })
       },
-      //查看图片
-      handlePreview(file) {
-        this.dialogImageUrl = file.url;
-        this.imgDialogVisible = true;
-      },
-      //移除图片
-      handleRemove() {
-        this.hideUpload = true
-      },
-      //图片上传前的处理
-      beforeUpload(file) {
-        let _this = this
-        const isLt1M = file.size / 1024 / 1024 < 10
-        if (!isLt1M) {
-          this.$message.error('上传的图片大小不能超过 10MB!')
-        }
-        return new Promise(((resolve, reject) => {
-          policy().then(res=>{
-            console.log(res)
-            _this.dataObj.policy = res.data.policy;
-            _this.dataObj.signature = res.data.signature;
-            _this.dataObj.ossaccessKeyId = res.data.accessKeyId;
-            _this.dataObj.key = res.data.dir +'project_cover/'+this.$store.getters.project.id+ '/${filename}';
-            _this.dataObj.dir = res.data.dir+'project_cover/'+this.$store.getters.project.id;
-            _this.dataObj.host = res.data.host;
-            console.log(_this.dataObj)
-            resolve(true)
-          }).catch(err => {
-            console.log(err)
-            reject(false)
-          })
-        }))
-      },
-      //上传成功后的处理
-      handleUploadSuccess(res, file) {
-        this.form.picture = this.dataObj.host + '/' + this.dataObj.dir + '/'+ file.name
+      updateCover(){
         updateCover({
           id:this.$store.getters.project.id,
-          picture:this.form.picture
+          picture: this.form.picture
         }).then(()=>{
-          this.$message.success("上传成功!")
+          this.updateProject()
+        })
+      },
+      updateDescription(){
+        updateDescription({
+          id:this.$store.getters.project.id,
+          description:this.form.description
+        }).then(()=>{
+          this.updateProject()
+        })
+      },
+      uploadSuccess(message){
+        this.form.picture = message.dataObj.host+'/'+message.dataObj.dir+'/'+message.file.name
+        this.updateCover()
+      },
+      updateProject(){
+        getProject({id:this.$store.getters.project.id}).then(res=>{
+          this.$store.dispatch("app/setProject",res.data)
+        })
+      },
+      archiveProject(){
+        archiveProject({projectId:this.$store.getters.project.id}).then(()=>{
+          this.$message.success("归档成功")
+          this.$router.push("/project/my-project")
+        })
+      },
+      deleteProject(){
+        deleteProject({projectId:this.$store.getters.project.id}).then(()=>{
+          this.$message.success("删除成功")
+          this.$router.push("/project/my-project")
         })
       }
     }
@@ -135,18 +118,11 @@
     height: 100%;
     overflow: auto;
   }
-  .hide {
+  .cover{
+    width: 200px;
     height: 110px;
-    >>>.el-upload--picture-card {
-      height: 0;
-      display: none;
-    }
-  }
-  .uploadImg{
-    i{
-      float: left;
-      margin: 9px 6px 10px 10px;
-    }
+    border-radius: 5px;
+    object-fit:cover;
   }
   .el-form-item{
     margin: 0;
@@ -156,6 +132,30 @@
     }
     label, p{
       font-weight: bolder;
+    }
+    >>>.upload{
+      width: 100px;
+      margin-left: 20px;
+    }
+    .el-form-item__content{
+      width: 600px;
+    }
+    .archive{
+      width: auto;
+      float: left;
+    }
+    .delete{
+      width: auto;
+      float: left;
+      margin-left: 20px;
+    }
+  }
+</style>
+<style lang="scss">
+  .id{
+    .el-input.is-disabled .el-input__inner{
+      color: #333333;
+      cursor: text;
     }
   }
 </style>

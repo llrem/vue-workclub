@@ -23,7 +23,6 @@ const mutations = {
   RESET_STATE: (state) => {
     //Object.assign(state, getDefaultState())
     state.token = ''
-    removeToken()
     state.userInfo = ''
   },
   SET_USERINFO: (state, userInfo) => {
@@ -76,7 +75,7 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
-        //removeToken() // must remove token first
+        removeToken() // must remove token first
         commit('RESET_STATE')
         resolve()
       }).catch(error => {

@@ -9,7 +9,10 @@
         <div class="avatar-wrapper">
           <img :src="avatar" alt=""/>
         </div>
-        <el-dropdown-menu></el-dropdown-menu>
+        <el-dropdown-menu>
+          <el-dropdown-item @click.native="">通知</el-dropdown-item>
+          <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
+        </el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
@@ -47,8 +50,10 @@
         this.$store.dispatch('settings/toggleSideBar')
         this.isActive = !this.isActive
       },
-      async logout() {
-
+      logout() {
+        this.$store.dispatch("user/logout").then(()=>{
+          this.$router.push("/login")
+        })
       }
     }
   }
@@ -97,5 +102,9 @@
         }
       }
     }
+  }
+  .el-dropdown-menu__item{
+    width: 60px;
+    text-align: center;
   }
 </style>

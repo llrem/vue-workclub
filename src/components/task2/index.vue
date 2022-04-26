@@ -1,6 +1,6 @@
 <template>
-  <div class="task-wrapper">
-    <div class="task" :class="priorityBar" @click="dialogVisible = true">
+  <div class="task2-wrapper">
+    <div class="task2" :class="priorityBar" @click="dialogVisible = true">
       <div class="title">{{task.description}}</div>
       <div class="info">
         <div class="status" :class="statusBColor">{{status}}</div>
@@ -425,6 +425,8 @@
                 break;
               }
             }
+            this.$emit("getTasks")
+            this.$message.success("修改成功")
           })
         },
         priorityChange(priority){
@@ -603,9 +605,9 @@
 </script>
 
 <style lang="scss" scoped>
-  .task{
-    width: 260px;
-    margin: 0 3px 8px 3px;
+  .task2{
+    width: 250px;
+    margin: 0 10px 8px 3px;
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 1px 3px #dedede;
@@ -634,6 +636,7 @@
     width: 100%;
     white-space: normal;
     word-wrap: break-word;
+    height: auto;
   }
   .status{
     font-size: 12px;
@@ -971,7 +974,7 @@
   }
 </style>
 <style lang="scss">
-  .task-wrapper{
+  .task2-wrapper{
     .el-dialog{
       width: 76%;
       height: 90%;
@@ -1016,6 +1019,11 @@
       padding: 0;
       border-radius: 15px;
       border: none;
+    }
+  }
+  .el-dropdown-menu{
+    .el-dropdown-menu__item{
+      padding: 0 10px;
     }
   }
 </style>

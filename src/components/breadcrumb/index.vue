@@ -32,21 +32,21 @@
         //this.$route.matched.filter(item => console.log(item))
         let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
         //console.log(matched)
-        const first = matched[0]
+        //const first = matched[0]
         //如果第一个路径不是dashboard，则添加一个dashboard对象到数组前面
-        if (!this.isDashboard(first)) {
-          matched = [{ path: '/dashboard', meta: { title: '我的工作台' }}].concat(matched)
-        }
+        //if (!this.isDashboard(first)) {
+        //  matched = [{ path: '/dashboard', meta: { title: '我的工作台' }}].concat(matched)
+        //}
         this.levelList = matched
       },
 
-      isDashboard(route) {
-        const name = route && route.name
-        if (!name) {
-          return false
-        }
-        return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
-      },
+      // isDashboard(route) {
+      //   const name = route && route.name
+      //   if (!name) {
+      //     return false
+      //   }
+      //   return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      // },
 
       handleLink(item) {
         const { redirect, path } = item

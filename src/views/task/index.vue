@@ -6,10 +6,21 @@
         <div class="menu">
           <hamburger :is-active="isActive" class="hamburger-container" @toggleClick="toggleSideBar"/>
           <div class="img">
-            <img :src="project.picture" alt="">
+            <img :src="$store.getters.project.picture" alt="">
           </div>
           <div class="nav">
-            <label>{{project.name}}</label>
+            <div class="title">
+              <label>
+                {{$store.getters.project.name}}
+              </label>
+              <el-popover placement="bottom" width="400" trigger="click">
+                <label style="font-weight: bolder;margin-bottom: 5px">项目编号： </label>
+                {{$store.getters.project.id}}
+                <p style="font-weight: bolder;margin: 5px 0">项目描述：</p>
+                {{$store.getters.project.description}}
+                <el-button slot="reference"><i class="el-icon-info"></i></el-button>
+              </el-popover>
+            </div>
             <el-menu :default-active="$route.path" mode="horizontal">
               <el-menu-item index="/task/board"><router-link to="/task/board">任务看板</router-link></el-menu-item>
               <el-menu-item index="/task/member"><router-link to="/task/member">成员管理</router-link></el-menu-item>
@@ -24,7 +35,8 @@
             <el-dropdown trigger="click">
               <img :src="avatar" alt=""/>
               <el-dropdown-menu>
-
+                <el-dropdown-item @click.native="">通知</el-dropdown-item>
+                <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -52,12 +64,8 @@
     data() {
       return {
         loading:true,
-        project:'',
         avatar:this.$store.getters.userInfo.icon
       };
-    },
-    created(){
-      this.project = this.$store.getters.project
     },
     computed: {
       key() {
@@ -85,6 +93,11 @@
       toggleSideBar() {
         this.$store.dispatch('settings/toggleSideBar')
         this.isActive = !this.isActive
+      },
+      logout() {
+        this.$store.dispatch("user/logout").then(()=>{
+          this.$router.push("/login")
+        })
       }
     }
   }
@@ -143,11 +156,23 @@
     .nav{
       padding: 10px 5px;
       height:70px;
-      label{
-        margin-top: 20px;
-        height: 40px;
-        color: #333333;
-        font-weight: bold;
+      .title{
+        display: flex;
+        align-items: center;
+        label{
+          color: #333333;
+          font-weight: bold;
+        }
+        .el-button{
+          padding: 0;
+          border: none;
+          border-radius: 8px;
+          margin: 3px 0 0 5px;
+        }
+        i{
+          font-size: 16px;
+          color: lightgrey;
+        }
       }
       .el-menu{
         height: 38px;
@@ -186,7 +211,10 @@
   }
   .content{
     overflow-y: hidden;
-    margin-top: 1px;
     height: calc(100vh - 72px);
+  }
+  .el-dropdown-menu__item{
+    width: 60px;
+    text-align: center;
   }
 </style>

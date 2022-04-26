@@ -48,14 +48,12 @@ export default {
     }
   },
   methods: {
-
     isOnlyOneChild(){
       if(typeof(this.item.children) == 'undefined'){
         return true;
       }
       return this.item.children.length === 1;
     },
-
     resolvePath(routePath) {
       return path.resolve(this.basePath, routePath)
     }

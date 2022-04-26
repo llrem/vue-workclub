@@ -1,34 +1,44 @@
 <template>
-  <div class="wrapper">
+  <div class="board-wrapper">
     <div class="nav">
-
+      <div class="search">
+        <i class="el-icon-search"></i>
+        <el-input
+          class="task-search"
+          v-model="description"
+          tabindex="1"
+          @keyup.enter.native="search"
+          placeholder="搜索任务"
+          ref="search">
+        </el-input>
+      </div>
+      <div class="operation"></div>
     </div>
     <div class="content">
-      <div class="boards">
-        <board v-for="board in boards"
-               @deleteBoard="deleteBoard(board.id)"
-               :board-id="board.id"
-               :title="board.name"
-               :key="board.id">
-        </board>
-        <div class="add">
-          <div class="addList">
-            <el-popover
-              placement="bottom"
-              width="250"
-              trigger="click"
-              v-model="visible">
-              <label>添加列表</label>
-              <el-form ref="form" :model="form">
-                <el-input placeholder="请输入列表名称" v-model="form.name"></el-input>
-              </el-form>
-              <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="visible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="submit">确定</el-button>
-              </div>
-              <el-button class="btn" slot="reference"><i class="el-icon-plus"></i><label> 添加列表</label></el-button>
-            </el-popover>
-          </div>
+      <board v-for="board in boards"
+             @deleteBoard="deleteBoard(board.id)"
+             :board-id="board.id"
+             :title="board.name"
+             :keyword="keyword"
+             :key="board.id">
+      </board>
+      <div class="add">
+        <div class="addList">
+          <el-popover
+            placement="bottom"
+            width="250"
+            trigger="click"
+            v-model="visible">
+            <label>添加列表</label>
+            <el-form ref="form" :model="form">
+              <el-input placeholder="请输入列表名称" v-model="form.name"></el-input>
+            </el-form>
+            <div style="text-align: right; margin: 0">
+              <el-button size="mini" type="text" @click="visible = false">取消</el-button>
+              <el-button type="primary" size="mini" @click="submit">确定</el-button>
+            </div>
+            <el-button class="btn" slot="reference"><i class="el-icon-plus"></i><label> 添加列表</label></el-button>
+          </el-popover>
         </div>
       </div>
     </div>
@@ -38,7 +48,7 @@
 <script>
   import task from '@/components/task/index'
   import board from '@/components/board/index'
-  import {addList,getBoards,deleteBoard} from "@/api/task";
+  import {addList, getBoards, deleteBoard, searchTask} from "@/api/task";
 
   export default {
     inject:['reload'],
@@ -54,15 +64,20 @@
           name:'',
           projectId:''
         },
-        boards:[]
+        boards:[],
+        description:'',
+        keyword:'',
       }
     },
     created(){
-      getBoards({projectId:this.$store.getters.project.id}).then(res=>{
-        this.boards = res.data;
-      })
+      this.getBoards()
     },
     methods:{
+      getBoards(){
+        getBoards({projectId:this.$store.getters.project.id}).then(res=>{
+          this.boards = res.data;
+        })
+      },
       submit(){
         this.form.projectId = this.$store.getters.project.id
         addList(this.form).then(()=>{
@@ -75,45 +90,49 @@
         })
       },
       deleteBoard(id) {
-        deleteBoard({id:id}).then(res=>{
+        deleteBoard({id:id}).then(()=>{
           this.$message({
             message: '删除成功',
             type: 'success'
           });
           this.reload()
         })
+      },
+      search(){
+        this.keyword = this.description
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .wrapper{
+  .board-wrapper{
     height: 100%;
     padding: 0;
   }
   .nav{
-    width: 100%;
     height: 35px;
-    border-bottom: solid 1px #f7f7f7;
+    display: flex;
+    justify-content: space-between;
+  }
+  .operation{
+    height: 35px;
+    width: 200px;
+    display: flex;
+    align-items: center;
   }
   .content{
-    height: calc(100vh - 105px);
+    display: flex;
+    flex-wrap: nowrap;
+    height: calc(100% - 35px);
     background-color: #f7f7f7;
     overflow-y: hidden;
     overflow-x: auto;
-  }
-  .boards{
-    padding: 15px 25px 7px 25px;
-    white-space: nowrap;
-  }
-  .add{
-    display: inline-block;
+    padding: 15px 25px 5px 25px;
   }
   .addList{
-    width: 295px;
-    height: calc(100vh - 150px);
-    overflow: auto;
+    width: 275px;
+    height: 100%;
   }
   .el-popover{
     label{
@@ -143,6 +162,31 @@
     &:hover{
       label,i{
         color: #409EFF;
+      }
+    }
+  }
+</style>
+<style lang="scss">
+  .board-wrapper{
+    .search{
+      width: 230px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+      i{
+        font-weight: bolder;
+        margin: 6px;
+        color: darkgrey;
+      }
+      .task-search{
+        .el-input__inner{
+          height: 30px;
+          width: 200px;
+          border: none;
+          border-radius: 0;
+          padding: 0;
+        }
       }
     }
   }

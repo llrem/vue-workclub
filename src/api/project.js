@@ -8,7 +8,15 @@ export function getProjects(params) {
   })
 }
 
-export function search(params){
+export function getProject(params) {
+  return request({
+    url: '/project/get_project',
+    method: 'get',
+    params:params
+  })
+}
+
+export function searchProject(params){
   return request({
     url: '/project/search_project',
     method: 'get',
@@ -35,6 +43,54 @@ export function getProjectMembers(params) {
 export function updateCover(data) {
   return request({
     url: '/project/update_cover',
+    method: 'post',
+    data:data
+  })
+}
+
+export function updateName(data) {
+  return request({
+    url: '/project/update_name',
+    method: 'post',
+    data:data
+  })
+}
+
+export function updateDescription(data) {
+  return request({
+    url: '/project/update_description',
+    method: 'post',
+    data:data
+  })
+}
+
+export function archiveProject(params) {
+  return request({
+    url: '/project/archive_project',
+    method: 'get',
+    params:params
+  })
+}
+
+export function deleteProject(params) {
+  return request({
+    url: '/project/delete_project',
+    method: 'get',
+    params:params
+  })
+}
+
+export function search(params) {
+  return request({
+    url: '/project/search',
+    method: 'get',
+    params:params
+  })
+}
+
+export function joinProject(data) {
+  return request({
+    url: '/project/join_project',
     method: 'post',
     data:data
   })

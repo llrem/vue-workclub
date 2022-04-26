@@ -13,11 +13,10 @@
       </div>
       <div class="btn">
         <el-button type="primary" @click="dialogVisible = true">新建文件夹</el-button>
-        <upload2
-          :object-name="'project/'+this.$store.getters.project.id+uploadPath"
-          @uploadSuccess="uploadSuccess">
+        <upload
+          :object-name="'file/project/'+this.$store.getters.project.id+uploadPath" @uploadSuccess="uploadSuccess">
           <el-button style="margin-left: 10px" type="primary">上传文件</el-button>
-        </upload2>
+        </upload>
       </div>
       <el-dialog
         title="请输入文件夹名称"
@@ -43,7 +42,7 @@
         <label>{{folder.name}}</label>
       </div>
       <div class="operation">
-        <i class="el-icon-delete" @click="deleteFile()"></i>
+        <i class="el-icon-delete" @click="deleteFolder(folder.name)"></i>
       </div>
     </div>
     <div class="fileItem" v-for="file in fileList" :key="file.name">
@@ -52,10 +51,10 @@
           class="icon"
           viewBox="0 0 1024 1024"
           xmlns="http://www.w3.org/2000/svg"
-          style="margin: 0 4px 0 2px"
           width="26"
-          height="26">
-          <path d="M679.814 62.381H128.692v897.177h768.434V255.079L679.814 62.381zM203.758 890.606V131.333h414.026v188.205H822.06v571.068H203.758z" fill="#8a8a8a" p-id="13360"></path><path d="M293.825 417.364H746.64v67.229H293.825zM293.825 577.709H746.64v67.229H293.825zM293.825 738.054H746.64v67.229H293.825z" fill="#8a8a8a"/>
+          height="26"
+          style="margin: 0 4px 0 2px">
+          <path d="M913.29536 941.04064c0.0256 24.82688-16.54784 44.96384-37.0176 44.98432l-708.23936 0.6912c-20.46464 0.02048-37.07904-20.08576-37.10464-44.91264l-0.83968-859.02848c-0.0256-24.82688 16.54784-44.96384 37.0176-44.98432l521.10848-0.50688 224.39424 210.50368 0.68096 693.25312z" fill="#E6E4E2" p-id="7440"></path><path d="M913.29536 253.26592l-189.11744 0.18432c-20.46464 0.02048-37.07904-20.08576-37.10464-44.91264l-0.16384-165.77024 226.38592 210.49856z" fill="#C4BCB1" p-id="7441"></path><path d="M720.72192 396.84096a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848zM720.72192 565.95456a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848zM720.72192 746.33728a22.54848 22.54848 0 0 1-22.54848 22.54848H326.13376a22.54848 22.54848 0 0 1 0-45.09696h372.0448a22.54848 22.54848 0 0 1 22.54336 22.54848z" fill="#C4BCB1"/>
         </svg>
         <label>{{file.name}}</label>
       </div>
@@ -68,8 +67,8 @@
 </template>
 
 <script>
-  import {addFolder, deleteFile, getFiles} from "@/api/file";
-  import upload2 from "@/components/upload2/index";
+  import {addFolder, deleteFile, deleteFolder, getFiles} from "@/api/file";
+  import upload from "@/components/upload/index";
 
   export default {
     name: "index",
@@ -84,7 +83,7 @@
       }
     },
     components:{
-      upload2
+      upload
     },
     computed:{
       uploadPath(){
@@ -117,15 +116,20 @@
         let objectName =this.$store.getters.project.id+this.getPath()+'/'+name
         window.location.href="http://localhost:8081/task/file/download_file?path="+objectName;
       },
+      deleteFolder(folderName){
+        let objectName = this.$store.getters.project.id+this.getPath()+'/'+folderName+'/'
+        deleteFolder({path:objectName}).then(()=>{
+          let path = this.getPath();
+          this.getFiles(path);
+          this.$message.success("删除成功")
+        })
+      },
       deleteFile(name){
         let objectName =this.$store.getters.project.id+this.getPath()+'/'+name
         deleteFile({path:objectName}).then(()=>{
           let path = this.getPath();
           this.getFiles(path);
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          });
+          this.$message.success("删除成功")
         })
       },
       async folderIn(folderName) {
@@ -166,10 +170,7 @@
       },
       uploadSuccess() {
         this.getFiles(this.getPath());
-        this.$message({
-          message: '上传成功',
-          type: 'success'
-        });
+        this.$message.success("上传成功")
       }
     }
   }
@@ -177,7 +178,7 @@
 
 <style lang="scss" scoped>
   .file-wrapper{
-    padding: 10px 30px;
+    padding: 10px 40px;
     height: 100%;
     overflow-y: auto;
   }

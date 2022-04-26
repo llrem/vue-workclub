@@ -1,13 +1,24 @@
 <template>
    <div class="board">
      <div class="title">
-       <label>{{title}}</label>
+       <label>{{boardName}}</label>
        <el-dropdown trigger="click">
          <i class="el-icon-more"></i>
          <el-dropdown-menu>
+           <el-dropdown-item @click.native="dialogVisible = true">重命名</el-dropdown-item>
            <el-dropdown-item @click.native="deleteBoard">删除列表</el-dropdown-item>
          </el-dropdown-menu>
        </el-dropdown>
+       <el-dialog
+         title="重命名"
+         :visible.sync="dialogVisible"
+         width="30%">
+         <el-input v-model="newBoardName"></el-input>
+         <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="renameSubmit">确 定</el-button>
+         </span>
+       </el-dialog>
      </div>
      <div class="tasks">
        <task v-for="task in tasks" :task="task" :key="task.id"></task>
@@ -32,7 +43,7 @@
 
 <script>
   import task from '@/components/task'
-  import {addTask,getTasks} from "@/api/task";
+  import {addTask, boardRename, getTasks} from "@/api/task";
 
   export default {
     name: "board",
@@ -44,24 +55,36 @@
           boardId:this.boardId,
           description:''
         },
-        tasks:[]
+        tasks:[],
+        dialogVisible:false,
+        boardName: this.title,
+        newBoardName:''
       }
     },
     props: {
       boardId:'',
-      title:''
+      title:'',
+      keyword:''
     },
     components:{
       task
     },
+    watch:{
+      keyword(){
+        this.getTasks()
+      }
+    },
     created(){
-      getTasks({boardId:this.form.boardId}).then(res=>{
-        this.tasks = res.data
-      }).catch(err=>{
-        console.log(err)
-      })
+      this.getTasks()
     },
     methods:{
+      getTasks(){
+        getTasks({boardId:this.form.boardId,keyword:this.keyword}).then(res=>{
+          this.tasks = res.data
+        }).catch(err=>{
+          console.log(err)
+        })
+      },
       submit(){
         addTask(this.form).then(()=>{
           this.$message({
@@ -76,6 +99,13 @@
       },
       deleteBoard(){
         this.$emit('deleteBoard')
+      },
+      renameSubmit(){
+        boardRename({boardId:this.boardId,boardName:this.newBoardName}).then(()=>{
+          this.boardName = this.newBoardName
+          this.dialogVisible = false
+          this.$message.success("修改成功")
+        })
       }
     }
   }
@@ -84,14 +114,12 @@
 <style lang="scss" scoped>
   .board{
     width: 275px;
-    height: calc(100vh - 140px);
     margin-right: 25px;
-    display: inline-block;
   }
   .tasks{
-    margin: 3px 0 8px 0;
+    margin: 3px 0 6px 0;
     width: 275px;
-    height: calc(100vh - 203px);
+    max-height: calc(100% - 65px);
     overflow-x: hidden;
     overflow-y: auto;
   }
@@ -116,6 +144,11 @@
       &:hover{
         color: #409EFF;
       }
+    }
+  }
+  .el-dialog{
+    .el-button{
+      padding: 8px 16px;
     }
   }
   .el-popover{
@@ -172,5 +205,13 @@
   }
   .el-dropdown-menu__item{
     padding: 0 10px;
+  }
+  .title{
+    .el-dialog{
+      margin-top: 120px !important;
+      .el-dialog__body{
+        padding: 20px;
+      }
+    }
   }
 </style>

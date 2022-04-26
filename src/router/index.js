@@ -11,36 +11,30 @@ export default new Router({
       component: () => import('@/views/login/index'),
       hidden: true
     },
-
     {
       path: '/404',
       component: () => import('@/views/404'),
       hidden: true
     },
-
     {
       path: '/',
       redirect: '/dashboard',
       hidden: true
     },
-
     {
       path: '/dashboard',
       component: layout,
-      name: 'dashboard',
       meta: { title: '工作台', icon: 'el-icon-menu' },
       children: [{
         path: '/dashboard',
-        name: 'Dashboard',
+        name: 'dashboard',
         component: () => import('@/views/dashboard/index'),
       }]
     },
-
     {
       path: '/project',
       component: layout,
       name: 'project',
-      redirect: '/project/my-project',
       meta: { title: '项目', icon: 'el-icon-s-help' },
       children: [
         {
@@ -57,7 +51,6 @@ export default new Router({
         },
       ]
     },
-
     {
       path:'/task',
       name:'task',
@@ -110,25 +103,9 @@ export default new Router({
         }
       ]
     },
-
-    {
-      path: '/notice',
-      component: layout,
-      name: 'notice',
-      meta: { title: '消息', icon: 'el-icon-s-comment' },
-      children: [
-        {
-          path: '/notice',
-          name: 'notice',
-          component: () => import('@/views/notice/index'),
-        }
-      ]
-    },
-
     {
       path: '/chart',
       component: layout,
-      name: 'chart',
       meta: { title: '数据图表', icon: 'el-icon-s-data' },
       children: [
         {
@@ -138,11 +115,9 @@ export default new Router({
         }
       ]
     },
-
     {
       path: '/mine',
       component: layout,
-      name: 'mine',
       meta: { title: '我的', icon: 'el-icon-user-solid' },
       children: [
         {
@@ -152,21 +127,17 @@ export default new Router({
         }
       ]
     },
-
     {
       path: '/setting',
       component: layout,
-      name: 'setting',
       meta: { title: '设置', icon: 'el-icon-s-tools' },
       children: [
         {
           path: '/setting',
-          name: 'setting',
           component: () => import('@/views/setting/index'),
         }
       ]
     },
-
     // 404 page must be placed at the end !!!
     { path: '*', redirect: '/404', hidden: true }
   ]

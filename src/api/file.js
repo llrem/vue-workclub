@@ -16,6 +16,14 @@ export function deleteFile(params) {
   })
 }
 
+export function deleteFolder(params) {
+  return request({
+    url: '/task/file/delete_folder',
+    method: 'get',
+    params:params
+  })
+}
+
 export function addFolder(params) {
   return request({
     url: '/task/file/add_folder',

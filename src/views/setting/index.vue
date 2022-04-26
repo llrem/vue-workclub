@@ -1,46 +1,29 @@
 <template>
-  <div>
-    <p>sidebar:{{sidebar}}</p>
-    <p>token:{{token}}</p>
-    <p>userInfo:{{userInfo}}</p>
-    <p>project:{{project}}</p>
+  <div class="home">
+    <div class="inner">
+    </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: "index.vue",
-    data(){
-      return{
-        sidebar:'',
-        token:'',
-        userInfo:'',
-        project:''
-      }
-    },
-    // computed:{
-    //   sidebar(){
-    //     return this.$store.getters.sidebar
-    //   },
-    //   token(){
-    //     return  this.$store.getters.token
-    //   },
-    //   userInfo(){
-    //     return  this.$store.getters.userInfo.id
-    //   },
-    //   project(){
-    //     return  this.$store.state.app.project.id
-    //   }
-    // },
-    created(){
-       this.sidebar = this.$store.getters.sidebar
-        this.token = this.$store.getters.token
-        this.userInfo = this.$store.getters.userInfo
-        this.project = this.$store.getters.project
-    }
+    name: "index"
   }
 </script>
 
 <style scoped>
-
+  .home{
+    width: 500px;
+    height: 300px;
+    background-color: aqua;
+    box-sizing: border-box;
+  }
+  .inner{
+    width: 400px;
+    height: 200px;
+    /* 为什么这里上方的margin会溢出父元素？？？？？？ */
+    margin: 20px;
+    box-sizing: border-box;
+    background-color: #08667d;
+  }
 </style>

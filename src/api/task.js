@@ -63,6 +63,14 @@ export function changeTaskPriority(params) {
   })
 }
 
+export function changeTaskType(params) {
+  return request({
+    url: '/task/board/change_task_type',
+    method: 'get',
+    params:params,
+  })
+}
+
 export function changeStartDate(data) {
   return request({
     url: '/task/board/change_start_date',
@@ -172,6 +180,30 @@ export function addLog(data) {
 export function getLogList(params) {
   return request({
     url: '/task/board/get_logList',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function deleteTask(params) {
+  return request({
+    url: '/task/board/delete_task',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function boardRename(params) {
+  return request({
+    url: '/task/board/board_rename',
+    method: 'get',
+    params:params,
+  })
+}
+
+export function searchTask(params) {
+  return request({
+    url: '/task/board/search_task',
     method: 'get',
     params:params,
   })

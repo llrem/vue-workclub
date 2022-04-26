@@ -13,7 +13,6 @@
 
 <script>
   import {policy} from "@/api/oss";
-  import {addFile} from "@/api/task";
 
   export default {
     name: "index",
@@ -30,7 +29,7 @@
       }
     },
     props:{
-      taskId:''
+      objectName:''
     },
     methods:{
       beforeUpload(file) {
@@ -44,8 +43,8 @@
             _this.dataObj.policy = res.data.policy;
             _this.dataObj.signature = res.data.signature;
             _this.dataObj.ossaccessKeyId = res.data.accessKeyId;
-            _this.dataObj.key = res.data.dir +'file/'+'task/'+this.taskId+ '/${filename}';
-            _this.dataObj.dir = res.data.dir+'file/'+'task/'+this.taskId;
+            _this.dataObj.key = res.data.dir +this.objectName+ '/${filename}';
+            _this.dataObj.dir = res.data.dir+this.objectName;
             _this.dataObj.host = res.data.host;
             resolve(true)
           }).catch(err => {
@@ -54,13 +53,7 @@
         }))
       },
       handleUploadSuccess(res, file) {
-        addFile({taskId:this.taskId,path:this.dataObj.dir,name:file.name}).then(res=>{
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          });
-          this.$emit('getFiles')
-        })
+        this.$emit('uploadSuccess',{dataObj:this.dataObj,file:file})
       }
     }
   }
