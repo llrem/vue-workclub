@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getMembers(params) {
   return request({
-    url: '/task/member/get_members',
+    url: '/project/member/get_members',
     method: 'get',
     params:params
   })
@@ -10,7 +10,7 @@ export function getMembers(params) {
 
 export function setPermission(params) {
   return request({
-    url: '/task/member/set_permission',
+    url: '/project/member/set_permission',
     method: 'get',
     params:params
   })
@@ -18,7 +18,7 @@ export function setPermission(params) {
 
 export function removeMember(params) {
   return request({
-    url: '/task/member/remove_member',
+    url: '/project/member/remove_member',
     method: 'get',
     params:params
   })
@@ -26,7 +26,7 @@ export function removeMember(params) {
 
 export function searchMember(params) {
   return request({
-    url: '/task/member/search_member',
+    url: '/project/member/search_member',
     method: 'get',
     params:params
   })
@@ -34,7 +34,7 @@ export function searchMember(params) {
 
 export function searchUser(params) {
   return request({
-    url: '/task/member/search_user',
+    url: '/project/member/search_user',
     method: 'get',
     params:params
   })
@@ -42,7 +42,7 @@ export function searchUser(params) {
 
 export function inviteUser(data) {
   return request({
-    url: '/task/member/invite_user',
+    url: '/project/member/invite_user',
     method: 'post',
     data:data
   })

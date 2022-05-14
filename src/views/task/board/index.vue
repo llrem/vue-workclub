@@ -48,7 +48,7 @@
 <script>
   import task from '@/components/task/index'
   import board from '@/components/board/index'
-  import {addList, getBoards, deleteBoard, searchTask} from "@/api/task";
+  import { addList, getBoards, deleteBoard } from "@/api/board";
 
   export default {
     inject:['reload'],

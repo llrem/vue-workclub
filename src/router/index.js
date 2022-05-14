@@ -130,6 +130,7 @@ export default new Router({
     {
       path: '/setting',
       component: layout,
+      hidden: true,
       meta: { title: '设置', icon: 'el-icon-s-tools' },
       children: [
         {

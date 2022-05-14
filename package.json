@@ -13,8 +13,13 @@
     "axios": "^0.25.0",
     "echarts": "^5.3.2",
     "element-ui": "^2.15.6",
+    "highlight.js": "^11.5.1",
     "js-cookie": "^3.0.1",
+    "marked": "^4.0.15",
+    "quill-image-resize-module": "^3.0.0",
     "vue": "^2.6.10",
+    "vue-clipboard2": "^0.3.3",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.6.2"
   },

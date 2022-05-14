@@ -1,16 +1,16 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="isActive" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <div class="path">
+      <hamburger :is-active="isActive" class="hamburger-container" @toggleClick="toggleSideBar" />
+      <breadcrumb class="breadcrumb-container"/>
+    </div>
+    <div class="menu">
 
-    <breadcrumb class="breadcrumb-container" />
-
-    <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" alt=""/>
         </div>
         <el-dropdown-menu>
-          <el-dropdown-item @click.native="">通知</el-dropdown-item>
           <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -21,19 +21,25 @@
 <script>
   import breadcrumb from '@/components/breadcrumb/index'
   import hamburger from '@/components/hamburger/index'
+  import notice from '@/components/notice/index'
+  import {agreeInvite, getInvitations, refuseInvite} from "@/api/project";
 
   export default {
+    inject:['reload'],
     data() {
       return{
-        avatar:''
+        avatar:'',
+        invitations:[]
       }
     },
     components: {
       breadcrumb,
-      hamburger
+      hamburger,
+      notice
     },
     created(){
       this.avatar = this.$store.getters.userInfo.icon
+      this.getInvitations()
     },
     computed: {
       isActive: {
@@ -46,6 +52,11 @@
       }
     },
     methods: {
+      getInvitations(){
+        getInvitations({userId:this.$store.getters.userInfo.id}).then(res=>{
+          this.invitations = res.data
+        })
+      },
       toggleSideBar() {
         this.$store.dispatch('settings/toggleSideBar')
         this.isActive = !this.isActive
@@ -53,6 +64,18 @@
       logout() {
         this.$store.dispatch("user/logout").then(()=>{
           this.$router.push("/login")
+        })
+      },
+      agree(id){
+        agreeInvite({id:id}).then(()=>{
+          this.$message.success("已成功加入项目")
+          this.reload()
+        })
+      },
+      refuse(id){
+        refuseInvite({id:id}).then(()=>{
+          this.$message.success("已拒绝")
+          this.reload()
         })
       }
     }
@@ -66,32 +89,47 @@
     position: relative;
     background: #fff;
     box-shadow: 0 1px 4px rgba(0,21,41,.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .hamburger-container {
-    line-height: 46px;
+  .path{
     height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
-    &:hover {
-      background: rgba(0, 0, 0, .025)
+    width: auto;
+    display: flex;
+    align-items: center;
+    .hamburger-container {
+      line-height: 46px;
+      height: 100%;
+      cursor: pointer;
+      transition: background .3s;
+      -webkit-tap-highlight-color:transparent;
+      &:hover {
+        background: rgba(0, 0, 0, .025)
+      }
     }
   }
-  .breadcrumb-container {
-    float: left;
-  }
-  .right-menu {
-    float: right;
+  .menu {
+    display: flex;
+    align-items: center;
     height: 100%;
-    line-height: 50px;
     &:focus {
       outline: none;
+    }
+    i{
+      color: grey;
+      font-size: 18px;
+    }
+    .el-button{
+      margin-right: 15px;
+      border: none;
+      padding: 0;
+      background-color: #fff;
     }
     .avatar-container {
       margin-right: 20px;
       .avatar-wrapper {
-        margin-top: 6px;
+        height: 38px;
         position: relative;
         img{
           cursor: pointer;
@@ -104,7 +142,28 @@
     }
   }
   .el-dropdown-menu__item{
+    line-height: 30px;
+    padding: 0 15px;
     width: 60px;
     text-align: center;
+  }
+</style>
+<style lang="scss">
+  .el-popover{
+    padding: 10px;
+  }
+  .notice-item{
+    padding: 5px;
+    &:hover{
+      background-color: #f0f0f0;
+    }
+    .el-button{
+      padding: 5px 10px;
+      margin-left: 3px;
+    }
+    .notice-item-footer{
+      margin-top: 7px;
+      text-align: right;
+    }
   }
 </style>

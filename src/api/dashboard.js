@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getTasksByUserId(params) {
+export function getTasks(params) {
   return request({
     url: '/dashboard/get_tasks',
     method: 'get',

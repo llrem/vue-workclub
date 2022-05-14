@@ -8,7 +8,9 @@ import axios from 'axios'
 import '@/styles/index.scss'
 import '@/permission'
 import * as echarts from 'echarts'
+import VueClipboard from 'vue-clipboard2'
 
+Vue.use(VueClipboard)
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.$http=axios;

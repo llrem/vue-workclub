@@ -14,7 +14,7 @@
                 {{$store.getters.project.name}}
               </label>
               <el-popover placement="bottom" width="400" trigger="click">
-                <label style="font-weight: bolder;margin-bottom: 5px">项目编号： </label>
+                <p style="font-weight: bolder;margin-bottom: 5px">项目编号： </p>
                 {{$store.getters.project.id}}
                 <p style="font-weight: bolder;margin: 5px 0">项目描述：</p>
                 {{$store.getters.project.description}}
@@ -28,17 +28,6 @@
               <el-menu-item index="/task/statistic"><router-link to="/task/statistic">数据统计</router-link></el-menu-item>
               <el-menu-item index="/task/setting"><router-link to="/task/setting">基本设置</router-link></el-menu-item>
             </el-menu>
-          </div>
-        </div>
-        <div class="setting">
-          <div class="avatar">
-            <el-dropdown trigger="click">
-              <img :src="avatar" alt=""/>
-              <el-dropdown-menu>
-                <el-dropdown-item @click.native="">通知</el-dropdown-item>
-                <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
           </div>
         </div>
       </div>
@@ -190,22 +179,6 @@
           padding: 10px 0;
           color: grey;
         }
-      }
-    }
-  }
-  .setting{
-    display: flex;
-    align-items: center;
-    .avatar{
-      margin: 0 10px;
-      width: 38px;
-      height: 38px;
-      overflow: hidden;
-      img{
-        width: 38px;
-        height: 38px;
-        border-radius: 19px;
-        object-fit:cover;
       }
     }
   }

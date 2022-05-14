@@ -15,14 +15,14 @@
         <el-progress :percentage="card.percentage" :color="card.color"></el-progress>
       </div>
     </div>
-    <div class="area-3">
-      <div class="title">
-        <label>燃尽图</label>
-      </div>
-      <div class="chart">
-        <div id="line"></div>
-      </div>
-    </div>
+<!--    <div class="area-3">-->
+<!--      <div class="title">-->
+<!--        <label>燃尽图</label>-->
+<!--      </div>-->
+<!--      <div class="chart">-->
+<!--        <div id="line"></div>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -58,7 +58,6 @@
           },
           series: [
             {
-              name: 'Access From',
               type: 'pie',
               radius: '50%',
               data: this.pieData,
@@ -113,8 +112,7 @@
         this.cardData = res.data
       })
       this.lineChart();
-    },
-
+    }
   }
 </script>
 

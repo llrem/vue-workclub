@@ -96,6 +96,30 @@ export function joinProject(data) {
   })
 }
 
+export function getInvitations(params) {
+  return request({
+    url: '/project/get_invitations',
+    method: 'get',
+    params:params
+  })
+}
+
+export function agreeInvite(params) {
+  return request({
+    url: '/project/agree_invite',
+    method: 'get',
+    params:params
+  })
+}
+
+export function refuseInvite(params) {
+  return request({
+    url: '/project/refuse_invite',
+    method: 'get',
+    params:params
+  })
+}
+
 // 上传图片至本地
 // export function uploadImg(data,username) {
 //   const formData = new FormData()

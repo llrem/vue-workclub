@@ -43,7 +43,7 @@
 
 <script>
   import task from '@/components/task'
-  import {addTask, boardRename, getTasks} from "@/api/task";
+  import {addTask, boardRename, getTasks} from "@/api/board";
 
   export default {
     name: "board",

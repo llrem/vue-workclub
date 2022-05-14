@@ -3,7 +3,18 @@
     <div class="content">
       <div class="myTask">
         <div class="task-header">
-          我的任务
+          <label>我的任务</label>
+          <div class="filter">
+            <el-select @change="getTasks()" v-model="projectId" placeholder="请选择">
+              <el-option
+                v-for="project in projects"
+                v-if="project.status===1"
+                :key="project.id"
+                :label="project.name"
+                :value="project.id">
+              </el-option>
+            </el-select>
+          </div>
         </div>
         <div class="task-body">
           <el-collapse v-model="activeNames" @change="">
@@ -60,8 +71,9 @@
 </template>
 
 <script>
-  import {getEventDates, getEvents, getTasksByUserId} from "@/api/dashboard";
+  import {getEventDates, getEvents, getTasks} from "@/api/dashboard";
   import task2 from "@/components/task2"
+  import {getProjects} from "@/api/project";
   require("@/utils/formatDate")
 
   export default {
@@ -74,10 +86,12 @@
         eventDateList:[],
         eventList:[],
         day:'',
-        activeNames: ['1','2'],
+        activeNames: ['1'],
         taskStatus1:[],
         taskStatus2:[],
-        taskStatus3:[]
+        taskStatus3:[],
+        projects:[],
+        projectId:''
       }
     },
     components:{
@@ -85,13 +99,19 @@
     },
     created(){
       this.day = new Date().Format("yyyy-MM-dd")
+      this.getProjects()
       this.getTasks()
       this.getEvents()
       this.getEventDates()
     },
     methods:{
+      getProjects(){
+        getProjects({id:this.$store.getters.userInfo.id}).then(res=>{
+          this.projects = res.data;
+        })
+      },
       getTasks(){
-        getTasksByUserId({userId:this.$store.getters.userInfo.id}).then(res=>{
+        getTasks({userId:this.$store.getters.userInfo.id,projectId:this.projectId}).then(res=>{
           const { taskStatus1, taskStatus2, taskStatus3 } = res.data;
           this.taskStatus1 = taskStatus1
           this.taskStatus2 = taskStatus2
@@ -125,6 +145,7 @@
     //height: calc(100vh - 50px);
     width: 100%;
     padding: 10px;
+    background-color: #f4f4f4;
   }
   .content{
     width: 100%;
@@ -134,16 +155,36 @@
     width: 67%;
     height: 100%;
     float: left;
+    overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,21,41,.15);
+    background-color: white;
   }
   .task-header{
     height: 50px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 5px 15px;
     font-weight: bold;
     color: #333333;
+    .filter{
+      width: 130px;
+      display: flex;
+      align-items: center;
+      .el-select{
+        width: 130px;
+      }
+      >>>.el-input{
+        font-size: 12px;
+      }
+      >>>input{
+        height: 30px;
+      }
+      >>>.el-input__icon{
+        line-height: 30px;
+      }
+    }
   }
   .task-body{
     height: calc(100% - 40px);
@@ -168,6 +209,7 @@
   }
   .info{
     width: 32%;
+    background-color: white;
     height: 100%;
     float: right;
     padding: 0 10px;

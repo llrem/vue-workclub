@@ -117,12 +117,7 @@
             this.getMembers()
             this.$message.success("移除成功")
           })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
+        })
       },
       searchMember(){
         searchMember({keyword:this.name,projectId:this.$store.getters.project.id}).then(res=>{
@@ -142,8 +137,8 @@
         if(this.inviteUserId===''){
           this.$message.info("请选择一个用户")
         }else{
-          inviteUser({projectId:this.$store.getters.project.id,userId:this.inviteUserId}).then(()=>{
-            this.$message.success("添加成功")
+          inviteUser({projectId:this.$store.getters.project.id,userId:this.inviteUserId,inviterId:this.$store.getters.userInfo.id}).then(()=>{
+            this.$message.success("邀请成功")
             this.getMembers()
             this.dialogVisible2 = false
           })
