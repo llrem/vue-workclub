@@ -1,6 +1,6 @@
 <template>
-  <div class="task2-wrapper">
-    <div class="task2" :class="priorityBar" @click="dialogVisible = true">
+  <div class="task-wrapper">
+    <div class="task" :class="priorityBar" @click="dialogVisible = true">
       <div class="title">{{task.description}}</div>
       <div class="info">
         <div class="status" :class="statusBColor">{{status}}</div>
@@ -43,6 +43,9 @@
           <el-dropdown trigger="click" placement="bottom">
             <i class="el-icon-more"></i>
             <el-dropdown-menu>
+              <el-dropdown-item @click.native="handleCopy(task.id)">
+                复制链接
+              </el-dropdown-item>
               <el-dropdown-item @click.native="deleteTask">删除任务</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -122,7 +125,7 @@
                   v-model="userSelectVisible">
                   <label>选择成员</label>
                   <el-form ref="form" :model="form" style="margin: 10px 0">
-                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
+<!--                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>-->
                   </el-form>
                   <div class="user-list">
                     <div class="user-item" v-for="member in members" :tabIndex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
@@ -171,7 +174,7 @@
             </div>
             <div class="form-item">
               <div class="form-label">
-              <label><i class="el-icon-medal"></i>优先级</label>
+                <label><i class="el-icon-medal"></i>优先级</label>
               </div>
               <el-dropdown class="priority" placement="bottom-start" trigger="click">
                 <label :class="priorityBColor">{{priority}}</label>
@@ -184,7 +187,7 @@
             </div>
             <div class="form-item" style="margin-top: 11px; height: auto; display: flex; align-items: flex-start;">
               <div class="form-label" style="margin-top: 5px">
-              <label><i class="el-icon-price-tag"></i>标签</label>
+                <label><i class="el-icon-price-tag"></i>标签</label>
               </div>
               <div class="tags2">
                 <el-tag
@@ -223,7 +226,7 @@
                   v-model="followerSelectVisible">
                   <label>选择成员</label>
                   <el-form ref="form" :model="form" style="margin: 10px 0">
-                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
+<!--                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>-->
                   </el-form>
                   <div class="user-list">
                     <div class="user-item" v-for="member in members" :tabindex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
@@ -243,21 +246,52 @@
                 </el-popover>
               </div>
             </div>
+
             <div class="dependence">
+              <div class="dependence-nav">
+                <label>前置任务</label>
+                <label class="add" @click="dialogVisible2=true">添加前置任务</label>
+                <el-dialog
+                  title="输入任务编号"
+                  :visible.sync="dialogVisible2"
+                  :modal="false"
+                  width="30%">
+                  <el-input v-model="headTaskId"></el-input>
+                  <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogVisible2 = false">取 消</el-button>
+                    <el-button type="primary" @click="addHeadTask">确 定</el-button>
+                   </span>
+                </el-dialog>
+              </div>
+              <div class="dependence-main">
+                <div class="dependence-item" v-for="(headTask,index) in headTaskList">
+                  <label>{{index+1+'. '+headTask.description}}</label>
+                  <div>
+                    <i class="el-icon-video-play"  style="color: darkgrey" v-if="headTask.status === 1"/>
+                    <i class="el-icon-video-pause"  style="color: #42C2FF" v-if="headTask.status === 2"/>
+                    <i class="el-icon-circle-check"  style="color: #65C18C" v-if="headTask.status === 3"/>
+                    <i class="el-icon-remove-outline" @click="removeHeadTask(headTask.id)"/>
+                  </div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
         <div class="task-menu">
           <el-menu default-active="1" class="el-menu-demo" mode="horizontal">
-            <el-menu-item index="1" @click="to(1)"><i class="el-icon-chat-dot-round"></i>讨论</el-menu-item>
-            <el-menu-item index="2" @click="to(2)"><i class="el-icon-folder"></i>附件</el-menu-item>
-            <el-menu-item index="3" @click="to(3)"><i class="el-icon-finished"></i>活动记录</el-menu-item>
+            <el-menu-item index="1" @click="content = 1"><i class="el-icon-coin"></i>想法</el-menu-item>
+            <el-menu-item index="2" @click="content = 2"><i class="el-icon-chat-dot-round"></i>讨论</el-menu-item>
+            <el-menu-item index="3" @click="content = 3"><i class="el-icon-folder"></i>附件</el-menu-item>
+            <el-menu-item index="4" @click="content = 4"><i class="el-icon-finished"></i>活动记录</el-menu-item>
           </el-menu>
 
-          <comment v-if="content === 1" :task-id="this.task.id"/>
-          <file v-if="content === 2" :task-id="this.task.id"/>
-          <log ref="log" v-if="content === 3" :task-id="this.task.id"/>
+          <sub-task v-if="content === 1" :task-id="this.task.id" @edit="edit"></sub-task>
+          <comment v-if="content === 2" :task-id="this.task.id"/>
+          <file v-if="content === 3" :task-id="this.task.id"/>
+          <log ref="log" v-if="content === 4" :task-id="this.task.id"/>
+          <rich-text v-if="content === 5" :task-id="this.task.id" @back="back"/>
         </div>
       </div>
     </el-dialog>
@@ -266,145 +300,156 @@
 
 <script>
   import {
+    addHeadTask,
     addLog,
     addTag, changeDescription,
     changeDueDate,
     changeStartDate,
     changeTaskPriority,
     changeTaskStatus, changeTaskType,
-    deleteTag, deleteTask,
-    getTaskInfo, removeExecutor, selectExecutor, selectFollower
+    deleteTag, deleteTask, getHeadTasks,
+    getTaskInfo, removeExecutor, removeHeadTask, selectExecutor, selectFollower
   } from "@/api/task";
-  import {getProjectMembers} from "@/api/project";
+  import {archiveProject, getProjectMembers} from "@/api/project";
   import comment from "@/views/task/board/comment/index"
   import file from "@/views/task/board/file/index"
   import log from "@/views/task/board/log/index"
+  import richText from "@/views/task/board/richText/index"
+  import subTask from "@/views/task/board/subTask/index"
+  import {removeMember} from "@/api/member";
 
-    export default {
-      name: "task",
-      inject:['reload'],
-      data(){
-        return{
-          dialogVisible:false,
-          userSelectVisible:false,
-          followerSelectVisible:false,
-          description:'',
-          status:'未完成',
-          statusBColor:'status-color1',
-          startDate:'',
-          dueDate:'',
-          priority:'普通',
-          priorityBColor:'priority-color1',
-          tags:[],
-          inputVisible: false,
-          inputValue: '',
-          typeBColor:'type-1',
-          priorityBar:'priority-1',
-          form:{
-            user:''
-          },
-          members:[],
-          followers:[],
-          executor:'Not Assigned',
-          executorImg:'',
-          hideExecutorIcon: false,
-          follower:'',
-          followerImg:'',
-          activeIndex:'',
-          content: 1,
-          memberId:''
+  export default {
+    name: "task",
+    inject:['reload'],
+    data(){
+      return{
+        dialogVisible:false,
+        dialogVisible2:false,
+        userSelectVisible:false,
+        followerSelectVisible:false,
+        description:'',
+        status:'未完成',
+        statusBColor:'status-color1',
+        startDate:'',
+        dueDate:'',
+        priority:'普通',
+        priorityBColor:'priority-color1',
+        tags:[],
+        inputVisible: false,
+        inputValue: '',
+        typeBColor:'type-1',
+        priorityBar:'priority-1',
+        form:{
+          user:''
+        },
+        members:[],
+        followers:[],
+        executor:'Not Assigned',
+        executorImg:'',
+        hideExecutorIcon: false,
+        follower:'',
+        followerImg:'',
+        activeIndex:'',
+        content: 1,
+        memberId:'',
+        headTaskId:'',
+        headTaskList:[]
+      }
+    },
+    props:{
+      task:''
+    },
+    components:{
+      comment,file,log,richText,subTask
+    },
+    computed: {
+      key() {
+        return this.$route.path
+      },
+    },
+    created(){
+      getTaskInfo({taskId:this.task.id}).then(res=>{
+        let taskInfo = res.data;
+        this.description = taskInfo.description;
+        this.startDate = taskInfo.startDate;
+        this.dueDate = taskInfo.dueDate
+        this.followers = taskInfo.followers;
+        this.headTaskList = taskInfo.headTaskList;
+        if(taskInfo.executor){
+          this.hideExecutorIcon = true
+          this.executor = taskInfo.executor.nickName
+          this.executorImg = taskInfo.executor.icon
         }
-      },
-      props:{
-        task:''
-      },
-      components:{
-        comment,file,log
-      },
-      computed: {
-        key() {
-          return this.$route.path
-        },
-      },
-      created(){
-        getTaskInfo({taskId:this.task.id}).then(res=>{
-          let taskInfo = res.data;
-          this.description = taskInfo.description;
-          this.startDate = taskInfo.startDate;
-          this.dueDate = taskInfo.dueDate
-          this.followers = taskInfo.followers;
-          if(taskInfo.executor){
-            this.hideExecutorIcon = true
-            this.executor = taskInfo.executor.nickName
-            this.executorImg = taskInfo.executor.icon
+        switch (taskInfo.priority) {
+          case 1:{
+            this.priority = '普通'
+            this.priorityBColor = 'priority-color1'
+            this.priorityBar = 'priority-1'
+            break;
           }
-          switch (taskInfo.priority) {
-            case 1:{
-              this.priority = '普通'
-              this.priorityBColor = 'priority-color1'
-              this.priorityBar = 'priority-1'
-              break;
-            }
-            case 2:{
-              this.priority = '紧急'
-              this.priorityBColor = 'priority-color2'
-              this.priorityBar = 'priority-2'
-              break;
-            }
-            case 3:{
-              this.priority = '非常紧急'
-              this.priorityBColor = 'priority-color3'
-              this.priorityBar = 'priority-3'
-              break;
-            }
+          case 2:{
+            this.priority = '紧急'
+            this.priorityBColor = 'priority-color2'
+            this.priorityBar = 'priority-2'
+            break;
           }
-          switch (taskInfo.status) {
-            case 1:{
-              this.status = '未完成'
-              this.statusBColor = 'status-color1'
-              break;
-            }
-            case 2:{
-              this.status = '进行中'
-              this.statusBColor = 'status-color2'
-              break;
-            }
-            case 3:{
-              this.status = '已完成'
-              this.statusBColor = 'status-color3'
-              break;
-            }
+          case 3:{
+            this.priority = '非常紧急'
+            this.priorityBColor = 'priority-color3'
+            this.priorityBar = 'priority-3'
+            break;
           }
-          switch (taskInfo.type) {
-            case 1:{
-              this.typeBColor='type-1'
-              break;
-            }
-            case 2:{
-              this.typeBColor='type-2'
-              break;
-            }
-            case 3:{
-              this.typeBColor='type-3'
-              break;
-            }
+        }
+        switch (taskInfo.status) {
+          case 1:{
+            this.status = '未完成'
+            this.statusBColor = 'status-color1'
+            break;
           }
-          this.tags = taskInfo.tags;
-        })
+          case 2:{
+            this.status = '进行中'
+            this.statusBColor = 'status-color2'
+            break;
+          }
+          case 3:{
+            this.status = '已完成'
+            this.statusBColor = 'status-color3'
+            break;
+          }
+        }
+        switch (taskInfo.type) {
+          case 1:{
+            this.typeBColor='type-1'
+            break;
+          }
+          case 2:{
+            this.typeBColor='type-2'
+            break;
+          }
+          case 3:{
+            this.typeBColor='type-3'
+            break;
+          }
+        }
+        this.tags = taskInfo.tags;
+      })
+    },
+    methods:{
+      close(){
+        this.dialogVisible = false
+        this.reload();
       },
-      methods:{
-        close(){
-          this.dialogVisible = false
-          //this.reload();
-        },
-        statusChange(status){
+      statusChange(status){
+        if(this.headTaskList.filter(item=>item.status !== 3).length > 0){
+          this.$message.warning("该任务还有前置任务未完成")
+        }else{
           changeTaskStatus({taskId:this.task.id, status:status}).then(()=>{
             switch (status) {
               case 1:{
                 this.status = '未完成'
                 this.statusBColor = 'status-color1'
                 addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'未完成', type:2}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
+                  if(this.content===4) this.$refs.log.getLogList()
                 })
                 break;
               }
@@ -412,7 +457,7 @@
                 this.status = '进行中'
                 this.statusBColor = 'status-color2'
                 addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'进行中', type:2}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
+                  if(this.content===4) this.$refs.log.getLogList()
                 })
                 break;
               }
@@ -420,194 +465,229 @@
                 this.status = '已完成'
                 this.statusBColor = 'status-color3'
                 addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'已完成', type:2}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-            }
-            this.$emit("getTasks")
-            this.$message.success("修改成功")
-          })
-        },
-        priorityChange(priority){
-          changeTaskPriority({taskId:this.task.id, priority:priority}).then(()=>{
-            switch (priority) {
-              case 1:{
-                this.priority = '普通'
-                this.priorityBColor = 'priority-color1'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'普通', type:6}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-              case 2:{
-                this.priority = '紧急'
-                this.priorityBColor = 'priority-color2'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'紧急', type:6}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-              case 3:{
-                this.priority = '非常紧急'
-                this.priorityBColor = 'priority-color3'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'非常紧急', type:6}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
+                  if(this.content===4) this.$refs.log.getLogList()
                 })
                 break;
               }
             }
           })
-        },
-        typeChange(type){
-          changeTaskType({taskId:this.task.id, type:type}).then(()=>{
-            this.task.type = type;
-            switch (type) {
-              case 1:{
-                this.typeBColor = 'type-1'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'任务', type:10}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-              case 2:{
-                this.typeBColor = 'type-2'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'里程碑', type:10}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-              case 3:{
-                this.typeBColor = 'type-3'
-                addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'问题', type:10}).then(()=>{
-                  if(this.content===3) this.$refs.log.getLogList()
-                })
-                break;
-              }
-            }
-          })
-        },
-        deleteTag(id,name){
-          //this.tags.splice(this.tags.indexOf(tag), 1);
-          deleteTag({id:id,taskId:this.task.id}).then(res=>{
-            this.tags = res.data;
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:name, type:8}).then(()=>{
-              if(this.content===3) this.$refs.log.getLogList()
-            })
-          })
-        },
-        showInput() {
-          this.inputVisible = true;
-          this.$nextTick(_ => {
-            this.$refs.saveTagInput.$refs.input.focus();
-          });
-        },
-        addTag() {
-          let inputValue = this.inputValue;
-          addTag({taskId:this.task.id,name:inputValue}).then(res=>{
-            this.tags = res.data
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:inputValue, type:7}).then(()=>{
-              if(this.content===3) this.$refs.log.getLogList()
-            })
-          })
-          this.inputVisible = false;
-          this.inputValue = '';
-        },
-        changeStartDate(){
-          changeStartDate({id:this.task.id, date:this.startDate})
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.startDate, type:4}).then(()=>{
-            if(this.content===3) this.$refs.log.getLogList()
-          })
-        },
-        changeDueDate(){
-          changeDueDate({id:this.task.id,userId:this.$store.getters.userInfo.id,date:this.dueDate})
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.dueDate, type:5}).then(()=>{
-            if(this.content===3) this.$refs.log.getLogList()
-          })
-        },
-        changeDescription(event){
-          changeDescription({taskId:this.task.id,description:event.target.innerText}).then(res=>{
-            this.description = res.data
-          })
-          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:event.target.innerText, type:1}).then(()=>{
-            if(this.content===3) this.$refs.log.getLogList()
-          })
-        },
-        selectMember(memberId){
-          this.memberId = memberId;
-        },
-        submitExecutorSelection(){
-          if(this.memberId === ''){
-            this.$message({
-              message: '请选择一个用户',
-              type: 'warning'
-            });
-          }else{
-            selectExecutor({taskId:this.task.id,memberId:this.memberId}).then(res=>{
-              this.executor = res.data.nickName
-              this.executorImg = res.data.icon
-              this.hideExecutorIcon = true
-              this.memberId=''
-              this.userSelectVisible = false
-            })
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:3}).then(()=>{
-              if(this.content===3) this.$refs.log.getLogList()
-            })
-          }
-        },
-        submitFollowerSelection(){
-          selectFollower({taskId:this.task.id,memberId:this.memberId}).then(res=>{
-            this.followers.push(res.data)
-            addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:9}).then(()=>{
-              if(this.content===3) this.$refs.log.getLogList()
-            })
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            });
-          })
-        },
-        getMembers(){
-          getProjectMembers({projectId:this.$store.getters.project.id}).then(res=>{
-            this.members = res.data;
-          })
-        },
-        removeExecutor(){
-          removeExecutor({taskId:this.task.id}).then(()=>{
-            this.executor = 'Not Assigned'
-            this.hideExecutorIcon = false
-          })
-        },
-        to(path){
-          switch (path) {
+        }
+      },
+      priorityChange(priority){
+        changeTaskPriority({taskId:this.task.id, priority:priority}).then(()=>{
+          switch (priority) {
             case 1:{
-              this.content = 1;
+              this.priority = '普通'
+              this.priorityBColor = 'priority-color1'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'普通', type:6}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
               break;
             }
             case 2:{
-              this.content = 2;
+              this.priority = '紧急'
+              this.priorityBColor = 'priority-color2'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'紧急', type:6}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
               break;
             }
             case 3:{
-              this.content = 3;
+              this.priority = '非常紧急'
+              this.priorityBColor = 'priority-color3'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'非常紧急', type:6}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
               break;
             }
           }
-        },
-        deleteTask(){
+        })
+      },
+      typeChange(type){
+        changeTaskType({taskId:this.task.id, type:type}).then(()=>{
+          this.task.type = type;
+          switch (type) {
+            case 1:{
+              this.typeBColor = 'type-1'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'任务', type:10}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
+              break;
+            }
+            case 2:{
+              this.typeBColor = 'type-2'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'里程碑', type:10}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
+              break;
+            }
+            case 3:{
+              this.typeBColor = 'type-3'
+              addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:'问题', type:10}).then(()=>{
+                if(this.content===4) this.$refs.log.getLogList()
+              })
+              break;
+            }
+          }
+        })
+      },
+      deleteTag(id,name){
+        //this.tags.splice(this.tags.indexOf(tag), 1);
+        deleteTag({id:id,taskId:this.task.id}).then(res=>{
+          this.tags = res.data;
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:name, type:8}).then(()=>{
+            if(this.content===4) this.$refs.log.getLogList()
+          })
+        })
+      },
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+      addTag() {
+        let inputValue = this.inputValue;
+        addTag({taskId:this.task.id,name:inputValue}).then(res=>{
+          this.tags = res.data
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:inputValue, type:7}).then(()=>{
+            if(this.content===4) this.$refs.log.getLogList()
+          })
+        })
+        this.inputVisible = false;
+        this.inputValue = '';
+      },
+      changeStartDate(){
+        changeStartDate({id:this.task.id, date:this.startDate})
+        addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.startDate, type:4}).then(()=>{
+          if(this.content===4) this.$refs.log.getLogList()
+        })
+      },
+      changeDueDate(){
+        changeDueDate({id:this.task.id,date:this.dueDate})
+        addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.dueDate, type:5}).then(()=>{
+          if(this.content===4) this.$refs.log.getLogList()
+        })
+      },
+      changeDescription(event){
+        changeDescription({taskId:this.task.id,description:event.target.innerText}).then(res=>{
+          this.description = res.data
+        })
+        addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:event.target.innerText, type:1}).then(()=>{
+          if(this.content===4) this.$refs.log.getLogList()
+        })
+      },
+      selectMember(memberId){
+        this.memberId = memberId;
+      },
+      submitExecutorSelection(){
+        if(this.memberId === ''){
+          this.$message({
+            message: '请选择一个用户',
+            type: 'warning'
+          });
+        }else{
+          selectExecutor({taskId:this.task.id,memberId:this.memberId}).then(res=>{
+            this.executor = res.data.nickName
+            this.executorImg = res.data.icon
+            this.hideExecutorIcon = true
+            this.memberId=''
+            this.userSelectVisible = false
+          })
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:3}).then(()=>{
+            if(this.content===4) this.$refs.log.getLogList()
+          })
+        }
+      },
+      submitFollowerSelection(){
+        selectFollower({taskId:this.task.id,memberId:this.memberId}).then(res=>{
+          this.followers.push(res.data)
+          addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.memberId, type:9}).then(()=>{
+            if(this.content===4) this.$refs.log.getLogList()
+          })
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          });
+        })
+      },
+      getMembers(){
+        getProjectMembers({projectId:this.$store.getters.project.id}).then(res=>{
+          this.members = res.data;
+        })
+      },
+      removeExecutor(){
+        removeExecutor({taskId:this.task.id}).then(()=>{
+          this.executor = 'Not Assigned'
+          this.hideExecutorIcon = false
+        })
+      },
+      deleteTask(){
+        if(this.$store.getters.role === 3){
+          this.$message.warning("抱歉，你没有删除权限")
+          return
+        }
+        this.$confirm('是否删除该任务?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
           deleteTask({taskId:this.task.id}).then(()=>{
             this.$message.success("删除成功");
             this.reload();
           })
-        }
+        })
+      },
+      handleCopy(val){
+        let value = val.toString()
+        const that = this
+        this.$copyText(value)
+          .then(() => {
+            that.$message.success('复制成功')
+          })
+          .catch(() => {
+            that.$message.success('复制失败')
+          })
+      },
+      edit(){
+        this.content=5
+      },
+      back(){
+        this.content=1
+      },
+      addHeadTask(){
+        addHeadTask({projectId:this.$store.getters.project.id,
+          headTask:this.headTaskId,
+          rearTask:this.task.id}).then(()=>{
+          this.$message.success("添加成功")
+          this.dialogVisible2 = false
+          getHeadTasks({taskId:this.task.id}).then(res=>{
+            this.headTaskList = res.data
+          })
+        })
+      },
+      removeHeadTask(taskId){
+        this.$confirm('是否移除该前置任务?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          removeHeadTask({headTask:taskId,rearTask:this.task.id}).then(()=>{
+            this.$message.success("移除成功")
+            getHeadTasks({taskId:this.task.id}).then(res=>{
+              this.headTaskList = res.data
+            })
+          })
+        })
       }
     }
+  }
 </script>
 
 <style lang="scss" scoped>
-  .task2{
+  .task{
     width: 250px;
-    margin: 0 10px 8px 3px;
+    margin: 0 10px 10px 0;
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 1px 3px #dedede;
@@ -636,7 +716,6 @@
     width: 100%;
     white-space: normal;
     word-wrap: break-word;
-    height: auto;
   }
   .status{
     font-size: 12px;
@@ -759,7 +838,7 @@
     flex-direction: row-reverse;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 13px 20px;
     border-bottom: solid 1.5px #f0f0f0;
     i{
       margin-left: 10px;
@@ -960,6 +1039,42 @@
       }
     }
   }
+  .dependence{
+    .dependence-nav{
+      height: 30px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      label{
+        font-size: 14px;
+      }
+      .add{
+        color: #409EFF;
+      }
+      .el-dialog{}
+    }
+    .dependence-main{
+      padding: 0 10px;
+      i{
+        font-size: 15px;
+      }
+      .dependence-item{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 30px;
+        padding: 0 8px;
+        border-radius: 3px;
+        &:hover{
+          background-color: #dedede;
+        }
+        .el-icon-remove-outline:hover{
+          color: #FD5D5D;
+        }
+      }
+    }
+  }
   ::-webkit-scrollbar{
     width: 7px;
     height: 7px;
@@ -974,11 +1089,11 @@
   }
 </style>
 <style lang="scss">
-  .task2-wrapper{
+  .task-wrapper{
     .el-dialog{
-      width: 76%;
-      height: 90%;
-      margin-top: 30px !important;
+      width: 78%;
+      height: 92%;
+      margin-top: 22px !important;
       margin-bottom: 0 !important;
       .el-dialog__header{
         padding:0;
@@ -1021,9 +1136,27 @@
       border: none;
     }
   }
-  .el-dropdown-menu{
-    .el-dropdown-menu__item{
-      padding: 0 10px;
+  .dependence-nav{
+    .el-dialog{
+      height: auto;
+      margin-top: 120px !important;
+      .el-dialog__header{
+        .el-dialog__title{
+          font-size: 16px;
+        }
+        padding:17px;
+        border: none;
+      }
+      .el-dialog__body{
+        height: 50px;
+        padding: 10px 20px;
+      }
+      .el-dialog__footer{
+        padding: 27px 20px 20px 20px;
+        .el-button{
+          padding: 10px 20px;
+        }
+      }
     }
   }
 </style>

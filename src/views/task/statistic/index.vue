@@ -15,19 +15,35 @@
         <el-progress :percentage="card.percentage" :color="card.color"></el-progress>
       </div>
     </div>
-<!--    <div class="area-3">-->
-<!--      <div class="title">-->
-<!--        <label>燃尽图</label>-->
-<!--      </div>-->
-<!--      <div class="chart">-->
-<!--        <div id="line"></div>-->
-<!--      </div>-->
-<!--    </div>-->
+    <div class="area-3">
+      <div class="title">
+        <label>燃尽图</label>
+      </div>
+      <div class="chart">
+        <div id="line"></div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="title">
+        <label>任务拓扑序列</label>
+      </div>
+      <el-steps>
+        <el-step v-for="(node,index) in nodeData" :key="index" :title="node.name"></el-step>
+      </el-steps>
+    </div>
+    <div class="area-4">
+      <div class="title">
+        <label>任务拓扑图</label>
+      </div>
+      <div class="graph">
+        <div id="topology"></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import {getCardData, getPieData} from "@/api/statistic";
+  import {getCardData, getLineData, getPieData, getTopology} from "@/api/statistic";
   import Date from "@/utils/formatDate"
 
   export default {
@@ -36,7 +52,10 @@
       return{
         pieData:[],
         cardData:[],
-        lineData:[]
+        nodeData:[],
+        linksData:[],
+        datesData:[],
+        lineData:[],
       }
     },
     methods:{
@@ -82,7 +101,7 @@
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: ['1', '2', '3', '4', '5', '6', '7','8', '9', '10', '11', '12', '13', '14','15']
+            data: this.datesData
           },
           yAxis: {
             type: 'value'
@@ -91,16 +110,43 @@
             {
               name: 'Email',
               type: 'line',
-              data: [15,15,15,14,14,12,11,10,9,9,9,7,5,5,5]
-            },
-            {
-              name: 'Union Ads',
-              type: 'line',
-              data: [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]
-            },
+              data: this.lineData
+            }
           ]
         };
         myChart.setOption(option2);
+      },
+      graph(){
+        let myChart = this.$echarts.init(document.getElementById('topology'));
+        let option3 = {
+          tooltip: {},
+          animationDurationUpdate: 1500,
+          animationEasingUpdate: 'quinticInOut',
+          series: [
+            {
+              type: 'graph',
+              layout: 'none',
+              symbolSize: 50,
+              roam: true,
+              label: {
+                show: true
+              },
+              edgeSymbol: ['circle', 'arrow'],
+              edgeSymbolSize: [4, 10],
+              edgeLabel: {
+                fontSize: 20
+              },
+              data: this.nodeData,
+              links: this.linksData,
+              lineStyle: {
+                opacity: 0.9,
+                width: 2,
+                curveness: 0
+              }
+            }
+          ]
+        };
+        myChart.setOption(option3);
       }
     },
     mounted(){
@@ -111,7 +157,16 @@
       getCardData({projectId:this.$store.getters.project.id}).then(res=>{
         this.cardData = res.data
       })
-      this.lineChart();
+      getTopology({projectId:this.$store.getters.project.id}).then(res=>{
+        this.nodeData = res.data.graphVexNodes
+        this.linksData = res.data.graphArcNodes
+        this.graph();
+      })
+      getLineData({projectId:this.$store.getters.project.id}).then(res=>{
+        this.datesData = res.data.dates;
+        this.lineData = res.data.numbers;
+        this.lineChart();
+      })
     }
   }
 </script>
@@ -123,6 +178,18 @@
     height: 100%;
     overflow: auto;
     background-color: #f0f0f0;
+    ::-webkit-scrollbar{
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track{
+      background-color: white;
+
+    }
+    ::-webkit-scrollbar-thumb{
+      border-radius: 5px;
+      background-color: lightgray;
+    }
   }
   .area-1{
     width: 586px;
@@ -165,7 +232,7 @@
       margin-top: 3px;
     }
   }
-  .area-3{
+  .area-3,.area-4{
     width: 1184px;
     margin: 12px 0 12px 12px;
     height: 493px;
@@ -177,13 +244,45 @@
       height: calc(100% - 40px);
       padding:0 80px;
     }
-    #line{
+    .graph{
+      width: 100%;
+      height: calc(100% - 40px);
+      padding: 0 20px 20px 20px;
+    }
+    #line,#topology{
       width: 100%;
       height: 100%;
     }
   }
+  .steps{
+    width: 1184px;
+    height: 125px;
+    float: left;
+    margin: 0 0 0 12px;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    .el-steps{
+      padding: 10px 20px 20px 20px;
+      color: #333333 !important;
+    }
+    .el-step{
+      width: 150px;
+      >>>.el-step__title.is-wait,>>>.el-step__head.is-wait{
+        color: darkgrey;
+        border-color: darkgrey;
+      }
+      >>>.el-step__line{
+        background-color: darkgrey;
+      }
+    }
+  }
   .title{
     height: 40px;
+    width: 100%;
     padding: 10px 15px;
     color: grey;
   }

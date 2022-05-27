@@ -114,7 +114,7 @@
       },
       download(name){
         let objectName =this.$store.getters.project.id+this.getPath()+'/'+name
-        window.location.href="http://localhost:8081/task/file/download_file?path="+objectName;
+        window.location.href="http://localhost:8081/project/file/download_file?path="+objectName;
       },
       deleteFolder(folderName){
         let objectName = this.$store.getters.project.id+this.getPath()+'/'+folderName+'/'

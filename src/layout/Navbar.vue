@@ -5,7 +5,25 @@
       <breadcrumb class="breadcrumb-container"/>
     </div>
     <div class="menu">
-
+      <el-popover
+        placement="bottom"
+        width="270"
+        trigger="click">
+        <div v-if="invitations.length === 0">没有通知！</div>
+        <div class="notice-item"
+             v-for="(invitation,index) in invitations"
+             :key="index"
+             :class="index!==invitations.length-1?'notice-has-border-bottom':'' ">
+          <div class="notice-content">
+            {{invitation.content}}
+          </div>
+          <div class="notice-item-footer">
+            <el-button type="primary" plain size="mini" @click="agree(invitation.id)">同意</el-button>
+            <el-button type="danger" plain size="mini" @click="refuse(invitation.id)">拒绝</el-button>
+          </div>
+        </div>
+        <el-button slot="reference"><i class="el-icon-message-solid"></i></el-button>
+      </el-popover>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar" alt=""/>
@@ -153,17 +171,17 @@
     padding: 10px;
   }
   .notice-item{
-    padding: 5px;
-    &:hover{
-      background-color: #f0f0f0;
-    }
+    padding: 7px 0;
     .el-button{
       padding: 5px 10px;
       margin-left: 3px;
     }
     .notice-item-footer{
-      margin-top: 7px;
+      margin-top: 10px;
       text-align: right;
     }
+  }
+  .notice-has-border-bottom{
+    border-bottom: solid 1px #dedede;
   }
 </style>

@@ -35,9 +35,9 @@
       <el-table-column
         label="角色">
         <template slot-scope="scope">
-          <p v-if="scope.row.role === '1'">超级管理员</p>
-          <p v-if="scope.row.role === '2'">管理员</p>
-          <p v-if="scope.row.role === '3'">普通成员</p>
+          <p v-if="scope.row.role === 1">超级管理员</p>
+          <p v-if="scope.row.role === 2">管理员</p>
+          <p v-if="scope.row.role === 3">普通成员</p>
         </template>
       </el-table-column>
       <el-table-column
@@ -56,9 +56,9 @@
       class="edit"
       width="35%">
       <el-radio-group v-model="radio">
-        <el-radio label="1">超级管理员</el-radio>
-        <el-radio label="2">管理员</el-radio>
-        <el-radio label="3">普通成员</el-radio>
+        <el-radio :label="1">超级管理员</el-radio>
+        <el-radio :label="2">管理员</el-radio>
+        <el-radio :label="3">普通成员</el-radio>
       </el-radio-group>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -70,6 +70,7 @@
 
 <script>
   import {getMembers, inviteUser, removeMember, searchMember, searchUser, setPermission} from "@/api/member";
+  import {getUserRole} from "@/api/project";
 
   export default {
     name: "index",
@@ -80,6 +81,7 @@
         dialogVisible:false,
         dialogVisible2:false,
         radio:'',
+        currentRadio:'',
         userId:'',
         key:'',
         userList:[],
@@ -97,17 +99,33 @@
       },
       edit(user){
         this.radio = user.role
+        this.currentRadio = user.role
         this.dialogVisible = true
         this.userId = user.id
       },
       submit(){
-        setPermission({userId:this.userId,role:this.radio}).then(()=>{
+        if(this.$store.getters.role === 3 ){
+          this.$message.warning("抱歉，你没有修改权限")
+          return
+        }
+        if(this.$store.getters.role === 2 && (this.radio === 1 || this.radio === 2 || this.currentRadio === 1)){
+          this.$message.warning("抱歉，不可设置超过自身权限之外的角色")
+          return
+        }
+        setPermission({userId:this.userId,projectId:this.$store.getters.project.id,role:this.radio}).then(()=>{
           this.getMembers()
+          getUserRole({projectId:this.$store.getters.project.id,userId:this.$store.getters.userInfo.id}).then(res=>{
+            this.$store.dispatch('app/setRole',res.data)
+          })
           this.$message.success("修改成功")
         })
         this.dialogVisible = false
       },
       remove(user){
+        if(this.$store.getters.role !== 1){
+          this.$message.warning("抱歉，你没有移除权限")
+          return
+        }
         this.$confirm('是否移除该成员?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

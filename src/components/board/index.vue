@@ -44,6 +44,7 @@
 <script>
   import task from '@/components/task'
   import {addTask, boardRename, getTasks} from "@/api/board";
+  import {deleteTask} from "@/api/task";
 
   export default {
     name: "board",
@@ -98,7 +99,17 @@
         })
       },
       deleteBoard(){
-        this.$emit('deleteBoard')
+        if(this.$store.getters.role === 3){
+          this.$message.warning("抱歉，你没有删除权限")
+          return
+        }
+        this.$confirm('是否删除该任务列表?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$emit('deleteBoard')
+        })
       },
       renameSubmit(){
         boardRename({boardId:this.boardId,boardName:this.newBoardName}).then(()=>{

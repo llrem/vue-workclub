@@ -8,6 +8,8 @@
 </template>
 
 <script>
+  import {getUserRole} from "@/api/project";
+
   export default {
     name: "card",
     props: {
@@ -23,6 +25,9 @@
     },
     methods:{
       goto(){
+        getUserRole({projectId:this.project.id,userId:this.$store.getters.userInfo.id}).then(res=>{
+          this.$store.dispatch('app/setRole',res.data)
+        })
         this.$store.dispatch('app/setProject',this.project)
         this.$router.push('/task');
       }

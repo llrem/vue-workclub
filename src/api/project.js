@@ -120,6 +120,14 @@ export function refuseInvite(params) {
   })
 }
 
+export function getUserRole(params) {
+  return request({
+    url: '/project/get_user_role',
+    method: 'get',
+    params:params
+  })
+}
+
 // 上传图片至本地
 // export function uploadImg(data,username) {
 //   const formData = new FormData()

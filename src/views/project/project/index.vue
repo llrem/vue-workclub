@@ -133,7 +133,7 @@
         })
       },
       searchProject(){
-        searchProject({key:this.projectName}).then(res => {
+        searchProject({userId:this.$store.getters.userInfo.id,key:this.projectName}).then(res => {
           if(res.data.length===0){
             this.$message.error('无记录');
           }else{

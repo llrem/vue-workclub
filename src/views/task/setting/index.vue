@@ -39,6 +39,7 @@
 <script>
   import {archiveProject, deleteProject, getProject, updateCover, updateDescription, updateName} from "@/api/project";
   import upload from "@/components/upload"
+  import {removeMember} from "@/api/member";
 
   export default {
     name: "index",
@@ -97,15 +98,35 @@
         })
       },
       archiveProject(){
-        archiveProject({projectId:this.$store.getters.project.id}).then(()=>{
-          this.$message.success("归档成功")
-          this.$router.push("/project/my-project")
+        if(this.$store.getters.role !== 1){
+          this.$message.warning("抱歉，你没有修改权限")
+          return
+        }
+        this.$confirm('是否归档该项目?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          archiveProject({projectId:this.$store.getters.project.id}).then(()=>{
+            this.$message.success("归档成功")
+            this.$router.push("/project/my-project")
+          })
         })
       },
       deleteProject(){
-        deleteProject({projectId:this.$store.getters.project.id}).then(()=>{
-          this.$message.success("删除成功")
-          this.$router.push("/project/my-project")
+        if(this.$store.getters.role !== 1){
+          this.$message.warning("抱歉，你没有修改权限")
+          return
+        }
+        this.$confirm('是否删除该项目?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          deleteProject({projectId:this.$store.getters.project.id}).then(()=>{
+            this.$message.success("删除成功")
+            this.$router.push("/project/my-project")
+          })
         })
       }
     }

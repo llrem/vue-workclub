@@ -125,7 +125,7 @@
                   v-model="userSelectVisible">
                   <label>选择成员</label>
                   <el-form ref="form" :model="form" style="margin: 10px 0">
-                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
+<!--                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>-->
                   </el-form>
                   <div class="user-list">
                     <div class="user-item" v-for="member in members" :tabIndex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
@@ -226,7 +226,7 @@
                   v-model="followerSelectVisible">
                   <label>选择成员</label>
                   <el-form ref="form" :model="form" style="margin: 10px 0">
-                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>
+<!--                    <el-input placeholder="请输入用户ID或昵称" v-model="form.user"></el-input>-->
                   </el-form>
                   <div class="user-list">
                     <div class="user-item" v-for="member in members" :tabindex="member.id" :key="member.id" @click="()=>selectMember(member.id)">
@@ -310,7 +310,7 @@
     deleteTag, deleteTask, getHeadTasks,
     getTaskInfo, removeExecutor, removeHeadTask, selectExecutor, selectFollower
   } from "@/api/task";
-  import {getProjectMembers} from "@/api/project";
+  import {archiveProject, getProjectMembers} from "@/api/project";
   import comment from "@/views/task/board/comment/index"
   import file from "@/views/task/board/file/index"
   import log from "@/views/task/board/log/index"
@@ -437,7 +437,7 @@
       methods:{
         close(){
           this.dialogVisible = false
-          //this.reload();
+          this.reload();
         },
         statusChange(status){
           if(this.headTaskList.filter(item=>item.status !== 3).length > 0){
@@ -564,7 +564,7 @@
           })
         },
         changeDueDate(){
-          changeDueDate({id:this.task.id,userId:this.$store.getters.userInfo.id,date:this.dueDate})
+          changeDueDate({id:this.task.id,date:this.dueDate})
           addLog({userId:this.$store.getters.userInfo.id, taskId:this.task.id, object:this.dueDate, type:5}).then(()=>{
             if(this.content===4) this.$refs.log.getLogList()
           })
@@ -623,9 +623,19 @@
           })
         },
         deleteTask(){
-          deleteTask({taskId:this.task.id}).then(()=>{
-            this.$message.success("删除成功");
-            this.reload();
+          if(this.$store.getters.role === 3){
+            this.$message.warning("抱歉，你没有删除权限")
+            return
+          }
+          this.$confirm('是否删除该任务?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            deleteTask({taskId:this.task.id}).then(()=>{
+              this.$message.success("删除成功");
+              this.reload();
+            })
           })
         },
         handleCopy(val){
@@ -646,7 +656,9 @@
           this.content=1
         },
         addHeadTask(){
-          addHeadTask({headTask:this.headTaskId,rearTask:this.task.id}).then(()=>{
+          addHeadTask({projectId:this.$store.getters.project.id,
+            headTask:this.headTaskId,
+            rearTask:this.task.id}).then(()=>{
             this.$message.success("添加成功")
             this.dialogVisible2 = false
             getHeadTasks({taskId:this.task.id}).then(res=>{

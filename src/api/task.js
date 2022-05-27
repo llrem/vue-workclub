@@ -193,11 +193,11 @@ export function getHeadTasks(params) {
     params:params,
   })
 }
-export function addHeadTask(data) {
+export function addHeadTask(params) {
   return request({
     url: '/task/add_head_task',
-    method: 'post',
-    data:data,
+    method: 'get',
+    params:params,
   })
 }
 

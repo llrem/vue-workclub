@@ -14,3 +14,19 @@ export function getCardData(params) {
     params:params
   })
 }
+
+export function getTopology(params) {
+  return request({
+    url: '/project/statistic/get_topology',
+    method: 'get',
+    params:params
+  })
+}
+
+export function getLineData(params) {
+  return request({
+    url: '/project/statistic/get_line_data',
+    method: 'get',
+    params:params
+  })
+}

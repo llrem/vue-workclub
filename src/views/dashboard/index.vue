@@ -6,6 +6,7 @@
           <label>我的任务</label>
           <div class="filter">
             <el-select @change="getTasks()" v-model="projectId" placeholder="请选择">
+              <el-option label="所有项目" value=""></el-option>
               <el-option
                 v-for="project in projects"
                 v-if="project.status===1"
